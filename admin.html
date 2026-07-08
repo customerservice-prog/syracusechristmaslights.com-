@@ -21,6 +21,15 @@ tr:hover td { background: #fafafa; }
 .add-inventory input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
 .add-inventory button, .save-btn { background: #145a32; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; }
 .empty { color: #888; font-style: italic; }
+.cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.cal-header button { background: #145a32; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-cell { min-height: 64px; border: 1px solid #eee; border-radius: 4px; padding: 4px; font-size: 0.75rem; }
+.cal-label { text-align: center; font-weight: bold; color: #555; border: none; min-height: auto; }
+.cal-empty { background: #fafafa; border: none; }
+.cal-day-num { font-weight: bold; margin-bottom: 2px; }
+.cal-booking { background: #145a32; color: white; border-radius: 3px; padding: 1px 4px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.has-booking { border-color: #145a32; }
 </style>
 </head>
   <body>
