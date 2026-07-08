@@ -32,6 +32,10 @@ tr:hover td { background: #fafafa; }
   <h2>Bookings / Reservation Requests</h2>
 <div id="bookings-table"><p class="empty">Loading...</p></div>
 </section>
+<section>
+<h2>Booking Calendar</h2>
+<div id="calendar-view"><p class="empty">Loading...</p></div>
+</section>
 
   <section>
   <h2>Customers</h2>
@@ -54,8 +58,57 @@ function escapeHtml(str) {
 return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
 
+var calendarDate = new Date();
+var lastBookingsData = [];
+
+function renderCalendar(bookings) {
+var year = calendarDate.getFullYear();
+var month = calendarDate.getMonth();
+var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var firstDay = new Date(year, month, 1).getDay();
+var daysInMonth = new Date(year, month + 1, 0).getDate();
+
+var byDate = {};
+bookings.forEach(function (b) {
+if (!b.preferredDate) { return; }
+var d = String(b.preferredDate).slice(0, 10);
+if (!byDate[d]) { byDate[d] = []; }
+byDate[d].push(b);
+});
+
+var cells = '';
+for (var i = 0; i < firstDay; i++) {
+cells += '<div class="cal-cell cal-empty"></div>';
+}
+for (var day = 1; day <= daysInMonth; day++) {
+var mm = (month + 1) < 10 ? ('0' + (month + 1)) : String(month + 1);
+var dd = day < 10 ? ('0' + day) : String(day);
+var dateStr = year + '-' + mm + '-' + dd;
+var dayBookings = byDate[dateStr] || [];
+var content = '<div class="cal-day-num">' + day + '</div>';
+dayBookings.forEach(function (b) {
+content += '<div class="cal-booking" title="' + escapeHtml(b.name) + '">' + escapeHtml(b.name) + '</div>';
+});
+cells += '<div class="cal-cell' + (dayBookings.length ? ' has-booking' : '') + '">' + content + '</div>';
+}
+
+var header = '<div class="cal-header"><button onclick="changeMonth(-1)">Prev</button><strong>' + monthNames[month] + ' ' + year + '</strong><button onclick="changeMonth(1)">Next</button></div>';
+var dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(function (d) {
+return '<div class="cal-cell cal-label">' + d + '</div>';
+}).join('');
+
+document.getElementById('calendar-view').innerHTML = header + '<div class="cal-grid">' + dayLabels + cells + '</div>';
+}
+
+function changeMonth(delta) {
+calendarDate.setMonth(calendarDate.getMonth() + delta);
+renderCalendar(lastBookingsData);
+}
+
 function loadBookings() {
   fetch('/api/bookings').then(function (r) { return r.json(); }).then(function (bookings) {
+lastBookingsData = bookings;
+renderCalendar(bookings);
   var el = document.getElementById('bookings-table');
 if (!bookings.length) {
 el.innerHTML = '<p class="empty">No booking requests yet.</p>';
