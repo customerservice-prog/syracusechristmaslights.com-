@@ -244,3 +244,7 @@ section h2 {
 #reservation-form input, #reservation-form textarea { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; font-family: inherit; }
 #reservation-form button { margin-top: 16px; border: none; cursor: pointer; font-size: 1.05rem; padding: 12px 24px; border-radius: 6px; background: var(--green); color: white; font-weight: bold; }
 #res-status { font-size: 0.9rem; color: var(--green); text-align: center; }
+
+
+#reservation-form label { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+#reservation-form label input, #reservation-form label textarea { width: 100%; }
