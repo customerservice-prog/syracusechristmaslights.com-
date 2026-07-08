@@ -1,0 +1,15 @@
+{
+  "name": "syracuse-christmas-lights",
+  "version": "1.0.0",
+  "description": "Syracuse Christmas Lights - marketing site, instant estimate calculator, and booking request backend",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
