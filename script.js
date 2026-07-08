@@ -17,6 +17,12 @@ function storyCountForMultiplier(multiplier) {
   return 3;
 }
 
+function tierLabelForRate(rate) {
+  if (rate <= 4.5) { return 'Basic'; }
+  if (rate <= 7.0) { return 'Standard'; }
+  return 'Premium';
+}
+
 function calculateEstimate(inputs) {
   var storyCount = storyCountForMultiplier(inputs.storyMultiplier);
   var footprint = inputs.sqft / storyCount;
@@ -50,6 +56,29 @@ function formatCurrency(amount) {
   return '$' + amount.toFixed(0);
 }
 
+var lastEstimate = null;
+
+function buildReservationForm() {
+  var wrap = document.createElement('div');
+  wrap.id = 'reservation-wrap';
+
+wrap.innerHTML =
+  '<h4>Reserve This Estimate</h4>' +
+  '<p>Tell us how to reach you and your preferred install window. This does not charge you anything or guarantee a date - our team will follow up to confirm.</p>' +
+  '<form id="reservation-form">' +
+  '<label>Your Name<input type="text" id="res-name" required></label>' +
+  '<label>Email<input type="email" id="res-email" required></label>' +
+  '<label>Phone<input type="tel" id="res-phone" required></label>' +
+  '<label>Address<input type="text" id="res-address" placeholder="Street address in the Syracuse area"></label>' +
+  '<label>Preferred Install Window<input type="text" id="res-date" placeholder="e.g. Week of Nov 17"></label>' +
+  '<label>Notes<textarea id="res-notes" rows="2" placeholder="Anything else we should know?"></textarea></label>' +
+  '<button type="submit" id="res-submit">Request This Date</button>' +
+  '<p id="res-status"></p>' +
+  '</form>';
+
+return wrap;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   var form = document.getElementById('estimate-form');
   if (!form) { return; }
@@ -81,12 +110,72 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                 resultBox.hidden = false;
 
+                                                var existingReservation = document.getElementById('reservation-wrap');
+                            if (existingReservation) {
+                              existingReservation.parentNode.removeChild(existingReservation);
+                            }
+
                                                 if (result.overCap) {
                                                   priceEl.textContent = 'Custom quote needed';
                                                   noteEl.textContent = 'Your project looks larger or more complex than our instant calculator covers. Reach out and we will build a custom quote.';
+                                                  lastEstimate = null;
                                                 } else {
                                                   priceEl.textContent = formatCurrency(result.total) + ' estimated';
                                                   noteEl.textContent = 'Based on an estimated ' + result.perimeter.toFixed(0) + ' ft of roofline. This is a starting estimate, confirmed after a quick photo or on-site review.';
+
+                            lastEstimate = {
+                              sqft: sqft,
+                              stories: storyCountForMultiplier(storyMultiplier),
+                              package: tierLabelForRate(tierRate),
+                              addons: {
+                                smallTrees: smallTrees,
+                                largeTrees: largeTrees,
+                                garland: garland,
+                                permanent: permanent
+                              },
+                              estimate: Math.round(result.total)
+                            };
+
+                            var reservationForm = buildReservationForm();
+                                                  resultBox.appendChild(reservationForm);
+
+                            document.getElementById('reservation-form').addEventListener('submit', function (e) {
+                              e.preventDefault();
+                              var statusEl = document.getElementById('res-status');
+                              var submitBtn = document.getElementById('res-submit');
+                              var payload = {
+                                name: document.getElementById('res-name').value,
+                                email: document.getElementById('res-email').value,
+                                phone: document.getElementById('res-phone').value,
+                                address: document.getElementById('res-address').value,
+                                preferredDate: document.getElementById('res-date').value,
+                                notes: document.getElementById('res-notes').value,
+                                sqft: lastEstimate.sqft,
+                                stories: lastEstimate.stories,
+                                package: lastEstimate.package,
+                                addons: lastEstimate.addons,
+                                estimate: lastEstimate.estimate
+                              };
+
+                                                                                         submitBtn.disabled = true;
+                              statusEl.textContent = 'Sending...';
+
+                                                                                         fetch('/api/bookings', {
+                                                                                           method: 'POST',
+                                                                                           headers: { 'Content-Type': 'application/json' },
+                                                                                           body: JSON.stringify(payload)
+                                                                                         }).then(function (res) {
+                                                                                           if (!res.ok) { throw new Error('Request failed'); }
+                                                                                           return res.json();
+                                                                                         }).then(function () {
+                                                                                           statusEl.textContent = 'Thanks! We received your request and will follow up by email or phone to confirm your date.';
+                                                                                           document.getElementById('reservation-form').reset();
+                                                                                           submitBtn.disabled = false;
+                                                                                         }).catch(function () {
+                                                                                           statusEl.textContent = 'Something went wrong sending your request. Please call or email us directly for now.';
+                                                                                           submitBtn.disabled = false;
+                                                                                         });
+                            });
                                                 }
 
                                                 resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
