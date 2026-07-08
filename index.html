@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Syracuse Christmas Lights | Professional Holiday Light Installation</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+<div class="container header-inner">
+<div class="logo">Syracuse Christmas Lights</div>
+<nav>
+<a href="#services">Services</a>
+<a href="#packages">Packages</a>
+<a href="#calculator">Get Estimate</a>
+  <a href="#faq">FAQ</a>
+  </nav>
+  </div>
+  </header>
+
+  <section class="hero">
+  <div class="container">
+  <h1>Syracuse's Christmas Light Installation, Done Right</h1>
+  <p>Get an instant price estimate for your home and reserve your installation date online in minutes.</p>
+  <a href="#calculator" class="btn btn-primary">Get My Instant Estimate</a>
+  <a href="#packages" class="btn btn-secondary">See Packages</a>
+  </div>
+  </section>
+
+  <section class="about">
+  <div class="container">
+  <p>We're a local, established outdoor services business bringing the same reliability and attention to detail we're known for in the warmer months to holiday lighting. Fully insured crews, safe installation practices, and a tidy takedown after the season ends.</p>
+  </div>
+  </section>
+
+  <section id="services" class="services">
+  <div class="container">
+  <h2>Services</h2>
+  <ul class="service-list">
+  <li>Roofline and gutter lights, custom fit to your home</li>
+<li>Tree and shrub wrapping</li>
+<li>Wreaths, garland, and accent lighting</li>
+<li>Permanent, year-round light housing</li>
+<li>Full takedown and seasonal storage</li>
+  <li>Commercial and storefront holiday lighting</li>
+</ul>
+</div>
+</section>
+
+<section id="packages" class="packages">
+  <div class="container">
+<h2>Packages</h2>
+  <div class="package-grid">
+  <div class="package-card">
+  <h3>Basic</h3>
+  <p class="price">From $4.50 / ft</p>
+  <p>Single strand, one color, roofline coverage. Customer handles takedown.</p>
+</div>
+<div class="package-card featured">
+  <h3>Standard</h3>
+  <p class="price">From $7.00 / ft</p>
+  <p>Multi-color or warm white, roofline and gutters, professional takedown included.</p>
+</div>
+<div class="package-card">
+  <h3>Premium</h3>
+  <p class="price">From $10.00 / ft</p>
+  <p>Roofline, gutters, and accent lighting with high-end fixtures, plus storage.</p>
+  </div>
+  </div>
+  <p class="minimum-note">275 dollar minimum applies to every package. Final pricing confirmed after a quick photo or on-site review.</p>
+  </div>
+  </section>
+
+  <section id="calculator" class="calculator">
+  <div class="container">
+<h2>Get Your Instant Estimate</h2>
+  <form id="estimate-form">
+  <label for="sqft">Approximate house square footage</label>
+  <input type="number" id="sqft" min="500" step="50" value="2000" required>
+
+  <label for="stories">Number of stories</label>
+<select id="stories">
+  <option value="1">1 story</option>
+  <option value="1.15">2 stories</option>
+<option value="1.3">3 or more stories</option>
+  </select>
+
+<label for="tier">Package</label>
+  <select id="tier">
+<option value="4.5">Basic</option>
+<option value="7" selected>Standard</option>
+<option value="10">Premium</option>
+</select>
+
+<label for="smallTrees">Small trees to wrap</label>
+  <input type="number" id="smallTrees" min="0" value="0">
+
+<label for="largeTrees">Large trees to wrap</label>
+<input type="number" id="largeTrees" min="0" value="0">
+
+  <label for="garland">Garland or wreaths</label>
+  <input type="number" id="garland" min="0" value="0">
+
+  <label class="checkbox-label">
+  <input type="checkbox" id="permanent">
+  Add permanent year-round light housing
+</label>
+
+  <button type="submit" class="btn btn-primary">Calculate My Estimate</button>
+  </form>
+
+  <div id="result" class="result" hidden>
+  <h3>Your Estimate</h3>
+<p id="result-price" class="result-price"></p>
+<p id="result-note" class="result-note"></p>
+<a href="#contact" class="btn btn-primary">Book This Estimate</a>
+</div>
+  </div>
+</section>
+
+  <section class="how-it-works">
+<div class="container">
+  <h2>How It Works</h2>
+<ol>
+  <li>Enter your approximate square footage and number of stories.</li>
+  <li>Pick a package and any add-ons, and see your instant estimate.</li>
+  <li>Pick an install date and reserve it with a deposit.</li>
+  <li>We install, you enjoy the season, we handle takedown.</li>
+</ol>
+</div>
+  </section>
+
+  <section id="faq" class="faq">
+  <div class="container">
+  <h2>Frequently Asked Questions</h2>
+<div class="faq-item">
+<h3>How accurate is the online estimate?</h3>
+  <p>It is a strong starting estimate based on your home's size and stories. We confirm final pricing with a quick photo or on-site review before installation day.</p>
+  </div>
+  <div class="faq-item">
+  <h3>Do you supply the lights?</h3>
+<p>Yes, commercial-grade LED lights are included in every package.</p>
+</div>
+<div class="faq-item">
+  <h3>When should I book?</h3>
+  <p>Syracuse installation slots fill up through November, so early booking gets you your preferred date.</p>
+  </div>
+  <div class="faq-item">
+  <h3>What happens after the holidays?</h3>
+<p>We schedule takedown after the season and can store your lights until next year with the Premium package.</p>
+  </div>
+  </div>
+  </section>
+
+  <footer id="contact" class="site-footer">
+  <div class="container">
+  <p>Serving Syracuse and the surrounding Central New York area.</p>
+<p>Questions before booking? Reach out and we will get back to you promptly.</p>
+  <p class="footer-note">Online booking and deposits are coming soon. This calculator gives an instant estimate; final booking is confirmed directly with our team for now.</p>
+</div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+  </html>
+  
