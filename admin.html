@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+  <html lang="en">
+  <head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - Syracuse Christmas Lights</title>
+<style>
+body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f6f6f6; color: #222; }
+header { background: #145a32; color: white; padding: 16px 24px; }
+header h1 { margin: 0; font-size: 1.3rem; }
+main { max-width: 1100px; margin: 0 auto; padding: 24px; }
+section { background: white; border-radius: 8px; padding: 20px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+h2 { margin-top: 0; color: #145a32; font-size: 1.15rem; }
+table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #eee; vertical-align: top; }
+th { color: #555; font-size: 0.8rem; text-transform: uppercase; }
+tr:hover td { background: #fafafa; }
+.status-select { padding: 4px 6px; border-radius: 4px; border: 1px solid #ccc; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; background: #eee; }
+.inventory-row input[type="number"] { width: 70px; padding: 4px; }
+.add-inventory { display: flex; gap: 8px; margin-top: 12px; }
+.add-inventory input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
+.add-inventory button, .save-btn { background: #145a32; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; }
+.empty { color: #888; font-style: italic; }
+</style>
+</head>
+  <body>
+  <header>
+  <h1>Syracuse Christmas Lights - Admin Dashboard</h1>
+  </header>
+  <main>
+  <section>
+  <h2>Bookings / Reservation Requests</h2>
+<div id="bookings-table"><p class="empty">Loading...</p></div>
+</section>
+
+  <section>
+  <h2>Customers</h2>
+  <div id="customers-table"><p class="empty">Loading...</p></div>
+</section>
+
+  <section>
+  <h2>Inventory</h2>
+  <div id="inventory-table"><p class="empty">Loading...</p></div>
+<div class="add-inventory">
+  <input type="text" id="new-item-name" placeholder="New item name">
+  <input type="number" id="new-item-qty" placeholder="Qty" style="width:80px;">
+  <button onclick="addInventoryItem()">Add Item</button>
+  </div>
+</section>
+  </main>
+
+  <script>
+function escapeHtml(str) {
+return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+function loadBookings() {
+  fetch('/api/bookings').then(function (r) { return r.json(); }).then(function (bookings) {
+  var el = document.getElementById('bookings-table');
+if (!bookings.length) {
+el.innerHTML = '<p class="empty">No booking requests yet.</p>';
+  return;
+}
+  bookings.sort(function (a, b) { return b.createdAt.localeCompare(a.createdAt); });
+var rows = bookings.map(function (b) {
+  return '<tr>' +
+'<td>' + escapeHtml(b.name) + '<br><span class="tag">' + escapeHtml(b.email) + '</span> <span class="tag">' + escapeHtml(b.phone) + '</span></td>' +
+    '<td>' + escapeHtml(b.address) + '</td>' +
+    '<td>' + escapeHtml(b.package) + '<br>' + escapeHtml(b.sqft) + ' sqft, ' + escapeHtml(b.stories) + ' story</td>' +
+'<td>' + (b.estimate != null ? ('$' + b.estimate) : '-') + '</td>' +
+  '<td>' + escapeHtml(b.preferredDate) + '</td>' +
+  '<td><select class="status-select" onchange="updateBookingStatus(' + b.id + ', this.value)">' +
+['new', 'contacted', 'confirmed', 'completed', 'cancelled'].map(function (s) {
+  return '<option value="' + s + '"' + (s === b.status ? ' selected' : '') + '>' + s + '</option>';
+  }).join('') +
+    '</select></td>' +
+    '</tr>';
+}).join('');
+el.innerHTML = '<table><tr><th>Contact</th><th>Address</th><th>Package</th><th>Estimate</th><th>Preferred Date</th><th>Status</th></tr>' + rows + '</table>';
+  }).catch(function () {
+document.getElementById('bookings-table').innerHTML = '<p class="empty">Could not load bookings.</p>';
+});
+}
+
+function updateBookingStatus(id, status) {
+  fetch('/api/bookings/' + id, {
+method: 'PATCH',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ status: status })
+});
+  }
+  </script>
+
+    <script>
+  function loadCustomers() {
+fetch('/api/customers').then(function (r) { return r.json(); }).then(function (customers) {
+  var el = document.getElementById('customers-table');
+if (!customers.length) {
+el.innerHTML = '<p class="empty">No customers yet.</p>';
+return;
+}
+var rows = customers.map(function (c) {
+return '<tr>' +
+  '<td>' + escapeHtml(c.name) + '</td>' +
+  '<td>' + escapeHtml(c.email) + '<br><span class="tag">' + escapeHtml(c.phone) + '</span></td>' +
+  '<td>' + escapeHtml(c.address) + '</td>' +
+  '<td>' + c.bookingCount + '</td>' +
+  '<td>$' + c.totalEstimate + '</td>' +
+  '</tr>';
+}).join('');
+  el.innerHTML = '<table><tr><th>Name</th><th>Contact</th><th>Address</th><th># Requests</th><th>Total Est.</th></tr>' + rows + '</table>';
+}).catch(function () {
+document.getElementById('customers-table').innerHTML = '<p class="empty">Could not load customers.</p>';
+});
+  }
+</script>
+
+  <script>
+  function loadInventory() {
+fetch('/api/inventory').then(function (r) { return r.json(); }).then(function (inventory) {
+  var el = document.getElementById('inventory-table');
+if (!inventory.length) {
+el.innerHTML = '<p class="empty">No inventory items yet.</p>';
+return;
+}
+var rows = inventory.map(function (item) {
+return '<tr class="inventory-row">' +
+  '<td>' + escapeHtml(item.item) + '</td>' +
+  '<td><input type="number" value="' + item.quantity + '" onchange="updateInventoryQty(' + item.id + ', this.value)"></td>' +
+  '</tr>';
+}).join('');
+  el.innerHTML = '<table><tr><th>Item</th><th>Quantity</th></tr>' + rows + '</table>';
+}).catch(function () {
+document.getElementById('inventory-table').innerHTML = '<p class="empty">Could not load inventory.</p>';
+});
+}
+
+function updateInventoryQty(id, qty) {
+  fetch('/api/inventory/' + id, {
+method: 'PATCH',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ quantity: parseInt(qty, 10) || 0 })
+});
+}
+
+function addInventoryItem() {
+  var nameEl = document.getElementById('new-item-name');
+var qtyEl = document.getElementById('new-item-qty');
+var name = nameEl.value.trim();
+if (!name) { return; }
+fetch('/api/inventory', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ item: name, quantity: parseInt(qtyEl.value, 10) || 0 })
+  }).then(function () {
+  nameEl.value = '';
+    qtyEl.value = '';
+      loadInventory();
+});
+}
+
+loadBookings();
+loadCustomers();
+loadInventory();
+</script>
+  </body>
+  </html>
+  
