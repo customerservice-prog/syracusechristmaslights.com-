@@ -70,7 +70,7 @@ wrap.innerHTML =
   '<label>Email<input type="email" id="res-email" required></label>' +
   '<label>Phone<input type="tel" id="res-phone" required></label>' +
   '<label>Address<input type="text" id="res-address" placeholder="Street address in the Syracuse area"></label>' +
-  '<label>Preferred Install Window<input type="text" id="res-date" placeholder="e.g. Week of Nov 17"></label>' +
+  '<label>Preferred Install Date<input type="date" id="res-date"></label>' +
   '<label>Notes<textarea id="res-notes" rows="2" placeholder="Anything else we should know?"></textarea></label>' +
   '<button type="submit" id="res-submit">Request This Date</button>' +
   '<p id="res-status"></p>' +
