@@ -248,3 +248,53 @@ section h2 {
 
 #reservation-form label { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; }
 #reservation-form label input, #reservation-form label textarea { width: 100%; }
+
+.map-trace-box {
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 16px;
+  margin-bottom: 24px;
+  background: #fff;
+}
+
+.map-trace-box h3 {
+  margin-top: 0;
+  color: var(--green);
+}
+
+.map-search-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.map-search-row input {
+  flex: 1;
+  min-width: 200px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+#roof-map {
+  height: 400px;
+  width: 100%;
+  display: none;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+}
+
+#map-status {
+  font-size: 0.9rem;
+  color: var(--green);
+  min-height: 1.2em;
+}
+
+#map-use-btn,
+#map-clear-btn {
+  margin-right: 8px;
+  margin-top: 6px;
+}
