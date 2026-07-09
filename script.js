@@ -522,3 +522,20 @@ function initRoofMap() {
     });
   }
       }
+
+document.addEventListener('DOMContentLoaded', function () {
+  var animatedSections = document.querySelectorAll('.fade-in-section');
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    Array.prototype.forEach.call(animatedSections, function (el) { observer.observe(el); });
+  } else {
+    Array.prototype.forEach.call(animatedSections, function (el) { el.classList.add('visible'); });
+  }
+});
