@@ -431,3 +431,31 @@ to { transform: translateY(320px) translateX(20px); opacity: 0; }
 @media (max-width: 700px) {
 .hero-text { text-align: center; }
 }
+
+.areas {
+padding: 60px 0;
+background: var(--cream);
+}
+
+.areas-list {
+list-style: none;
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+padding: 0;
+margin: 16px 0;
+}
+
+.areas-list li {
+background: #eef3f9;
+color: var(--green);
+padding: 6px 16px;
+border-radius: 20px;
+font-size: 0.9rem;
+font-weight: 600;
+}
+
+.service-list li {
+margin-bottom: 10px;
+line-height: 1.5;
+}
