@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-  <html lang="en">
-  <head>
-  <meta charset="UTF-8">
-  <title>Admin Dashboard - Syracuse Christmas Lights</title>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard - Syracuse Christmas Lights</title>
 <style>
 body { font-family: Arial, Helvetica, sans-serif; margin: 0; background: #f6f6f6; color: #222; }
 header { background: #145a32; color: white; padding: 16px 24px; }
@@ -30,15 +30,16 @@ tr:hover td { background: #fafafa; }
 .cal-day-num { font-weight: bold; margin-bottom: 2px; }
 .cal-booking { background: #145a32; color: white; border-radius: 3px; padding: 1px 4px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .has-booking { border-color: #145a32; }
+.item-line { font-size: 0.8rem; margin-bottom: 2px; }
 </style>
 </head>
-  <body>
-  <header>
-  <h1>Syracuse Christmas Lights - Admin Dashboard</h1>
-  </header>
-  <main>
-  <section>
-  <h2>Bookings / Reservation Requests</h2>
+<body>
+<header>
+<h1>Syracuse Christmas Lights - Admin Dashboard</h1>
+</header>
+<main>
+<section>
+<h2>Bookings / Reservation Requests</h2>
 <div id="bookings-table"><p class="empty">Loading...</p></div>
 </section>
 <section>
@@ -46,185 +47,196 @@ tr:hover td { background: #fafafa; }
 <div id="calendar-view"><p class="empty">Loading...</p></div>
 </section>
 
-  <section>
-  <h2>Customers</h2>
-  <div id="customers-table"><p class="empty">Loading...</p></div>
+<section>
+<h2>Customers</h2>
+<div id="customers-table"><p class="empty">Loading...</p></div>
 </section>
 
-  <section>
-  <h2>Inventory</h2>
-  <div id="inventory-table"><p class="empty">Loading...</p></div>
+<section>
+<h2>Inventory</h2>
+<div id="inventory-table"><p class="empty">Loading...</p></div>
 <div class="add-inventory">
-  <input type="text" id="new-item-name" placeholder="New item name">
-  <input type="number" id="new-item-qty" placeholder="Qty" style="width:80px;">
-  <button onclick="addInventoryItem()">Add Item</button>
-  </div>
+<input type="text" id="new-item-name" placeholder="New item name">
+<input type="number" id="new-item-qty" placeholder="Qty" style="width:80px;">
+<button onclick="addInventoryItem()">Add Item</button>
+</div>
 </section>
-  </main>
+</main>
 
-  <script>
+<script>
 function escapeHtml(str) {
-return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return String(str == null ? '' : str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderItemsCell(b) {
+  if (Array.isArray(b.items) && b.items.length) {
+    return b.items.map(function (i) {
+      return '<div class="item-line">' + escapeHtml(i.label) + ' - ' + escapeHtml(i.detail) + ' (' + '$' + escapeHtml(i.price) + ')</div>';
+    }).join('');
   }
+  if (b.package) {
+    return escapeHtml(b.package) + '<br>' + escapeHtml(b.sqft) + ' sqft, ' + escapeHtml(b.stories) + ' story';
+  }
+  return '<span class="empty">No items</span>';
+}
 
 var calendarDate = new Date();
 var lastBookingsData = [];
 
 function renderCalendar(bookings) {
-var year = calendarDate.getFullYear();
-var month = calendarDate.getMonth();
-var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-var firstDay = new Date(year, month, 1).getDay();
-var daysInMonth = new Date(year, month + 1, 0).getDate();
+  var year = calendarDate.getFullYear();
+  var month = calendarDate.getMonth();
+  var monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  var firstDay = new Date(year, month, 1).getDay();
+  var daysInMonth = new Date(year, month + 1, 0).getDate();
 
-var byDate = {};
-bookings.forEach(function (b) {
-if (!b.preferredDate) { return; }
-var d = String(b.preferredDate).slice(0, 10);
-if (!byDate[d]) { byDate[d] = []; }
-byDate[d].push(b);
-});
+  var byDate = {};
+  bookings.forEach(function (b) {
+    if (!b.preferredDate) { return; }
+    var d = String(b.preferredDate).slice(0, 10);
+    if (!byDate[d]) { byDate[d] = []; }
+    byDate[d].push(b);
+  });
 
-var cells = '';
-for (var i = 0; i < firstDay; i++) {
-cells += '<div class="cal-cell cal-empty"></div>';
-}
-for (var day = 1; day <= daysInMonth; day++) {
-var mm = (month + 1) < 10 ? ('0' + (month + 1)) : String(month + 1);
-var dd = day < 10 ? ('0' + day) : String(day);
-var dateStr = year + '-' + mm + '-' + dd;
-var dayBookings = byDate[dateStr] || [];
-var content = '<div class="cal-day-num">' + day + '</div>';
-dayBookings.forEach(function (b) {
-content += '<div class="cal-booking" title="' + escapeHtml(b.name) + '">' + escapeHtml(b.name) + '</div>';
-});
-cells += '<div class="cal-cell' + (dayBookings.length ? ' has-booking' : '') + '">' + content + '</div>';
-}
+  var cells = '';
+  for (var i = 0; i < firstDay; i++) {
+    cells += '<div class="cal-cell cal-empty"></div>';
+  }
+  for (var day = 1; day <= daysInMonth; day++) {
+    var mm = (month + 1) < 10 ? ('0' + (month + 1)) : String(month + 1);
+    var dd = day < 10 ? ('0' + day) : String(day);
+    var dateStr = year + '-' + mm + '-' + dd;
+    var dayBookings = byDate[dateStr] || [];
+    var content = '<div class="cal-day-num">' + day + '</div>';
+    dayBookings.forEach(function (b) {
+      content += '<div class="cal-booking" title="' + escapeHtml(b.name) + '">' + escapeHtml(b.name) + '</div>';
+    });
+    cells += '<div class="cal-cell' + (dayBookings.length ? ' has-booking' : '') + '">' + content + '</div>';
+  }
 
-var header = '<div class="cal-header"><button onclick="changeMonth(-1)">Prev</button><strong>' + monthNames[month] + ' ' + year + '</strong><button onclick="changeMonth(1)">Next</button></div>';
-var dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(function (d) {
-return '<div class="cal-cell cal-label">' + d + '</div>';
-}).join('');
+  var header = '<div class="cal-header"><button onclick="changeMonth(-1)">Prev</button><strong>' + monthNames[month] + ' ' + year + '</strong><button onclick="changeMonth(1)">Next</button></div>';
+  var dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(function (d) {
+    return '<div class="cal-cell cal-label">' + d + '</div>';
+  }).join('');
 
-document.getElementById('calendar-view').innerHTML = header + '<div class="cal-grid">' + dayLabels + cells + '</div>';
+  document.getElementById('calendar-view').innerHTML = header + '<div class="cal-grid">' + dayLabels + cells + '</div>';
 }
 
 function changeMonth(delta) {
-calendarDate.setMonth(calendarDate.getMonth() + delta);
-renderCalendar(lastBookingsData);
+  calendarDate.setMonth(calendarDate.getMonth() + delta);
+  renderCalendar(lastBookingsData);
 }
 
 function loadBookings() {
   fetch('/api/bookings').then(function (r) { return r.json(); }).then(function (bookings) {
-lastBookingsData = bookings;
-renderCalendar(bookings);
-  var el = document.getElementById('bookings-table');
-if (!bookings.length) {
-el.innerHTML = '<p class="empty">No booking requests yet.</p>';
-  return;
-}
-  bookings.sort(function (a, b) { return b.createdAt.localeCompare(a.createdAt); });
-var rows = bookings.map(function (b) {
-  return '<tr>' +
-'<td>' + escapeHtml(b.name) + '<br><span class="tag">' + escapeHtml(b.email) + '</span> <span class="tag">' + escapeHtml(b.phone) + '</span></td>' +
-    '<td>' + escapeHtml(b.address) + '</td>' +
-    '<td>' + escapeHtml(b.package) + '<br>' + escapeHtml(b.sqft) + ' sqft, ' + escapeHtml(b.stories) + ' story</td>' +
-'<td>' + (b.estimate != null ? ('$' + b.estimate) : '-') + '</td>' +
-  '<td>' + escapeHtml(b.preferredDate) + '</td>' +
-  '<td><select class="status-select" onchange="updateBookingStatus(' + b.id + ', this.value)">' +
-['new', 'contacted', 'confirmed', 'completed', 'cancelled'].map(function (s) {
-  return '<option value="' + s + '"' + (s === b.status ? ' selected' : '') + '>' + s + '</option>';
-  }).join('') +
-    '</select></td>' +
-    '</tr>';
-}).join('');
-el.innerHTML = '<table><tr><th>Contact</th><th>Address</th><th>Package</th><th>Estimate</th><th>Preferred Date</th><th>Status</th></tr>' + rows + '</table>';
+    lastBookingsData = bookings;
+    renderCalendar(bookings);
+    var el = document.getElementById('bookings-table');
+    if (!bookings.length) {
+      el.innerHTML = '<p class="empty">No booking requests yet.</p>';
+      return;
+    }
+    bookings.sort(function (a, b) { return b.createdAt.localeCompare(a.createdAt); });
+    var rows = bookings.map(function (b) {
+      return '<tr>' +
+        '<td>' + escapeHtml(b.name) + '<br><span class="tag">' + escapeHtml(b.email) + '</span> <span class="tag">' + escapeHtml(b.phone) + '</span></td>' +
+        '<td>' + escapeHtml(b.address) + '</td>' +
+        '<td>' + renderItemsCell(b) + '</td>' +
+        '<td>' + (b.estimate != null ? ('$' + b.estimate) : '-') + '</td>' +
+        '<td>' + escapeHtml(b.preferredDate) + '</td>' +
+        '<td><select class="status-select" onchange="updateBookingStatus(' + b.id + ', this.value)">' +
+        ['new', 'contacted', 'confirmed', 'completed', 'cancelled'].map(function (s) {
+          return '<option value="' + s + '"' + (s === b.status ? ' selected' : '') + '>' + s + '</option>';
+        }).join('') +
+        '</select></td>' +
+        '</tr>';
+    }).join('');
+    el.innerHTML = '<table><tr><th>Contact</th><th>Address</th><th>Items</th><th>Estimate</th><th>Preferred Date</th><th>Status</th></tr>' + rows + '</table>';
   }).catch(function () {
-document.getElementById('bookings-table').innerHTML = '<p class="empty">Could not load bookings.</p>';
-});
+    document.getElementById('bookings-table').innerHTML = '<p class="empty">Could not load bookings.</p>';
+  });
 }
 
 function updateBookingStatus(id, status) {
   fetch('/api/bookings/' + id, {
-method: 'PATCH',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ status: status })
-});
-  }
-  </script>
-
-    <script>
-  function loadCustomers() {
-fetch('/api/customers').then(function (r) { return r.json(); }).then(function (customers) {
-  var el = document.getElementById('customers-table');
-if (!customers.length) {
-el.innerHTML = '<p class="empty">No customers yet.</p>';
-return;
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status: status })
+  });
 }
-var rows = customers.map(function (c) {
-return '<tr>' +
-  '<td>' + escapeHtml(c.name) + '</td>' +
-  '<td>' + escapeHtml(c.email) + '<br><span class="tag">' + escapeHtml(c.phone) + '</span></td>' +
-  '<td>' + escapeHtml(c.address) + '</td>' +
-  '<td>' + c.bookingCount + '</td>' +
-  '<td>$' + c.totalEstimate + '</td>' +
-  '</tr>';
-}).join('');
-  el.innerHTML = '<table><tr><th>Name</th><th>Contact</th><th>Address</th><th># Requests</th><th>Total Est.</th></tr>' + rows + '</table>';
-}).catch(function () {
-document.getElementById('customers-table').innerHTML = '<p class="empty">Could not load customers.</p>';
-});
-  }
 </script>
 
-  <script>
-  function loadInventory() {
-fetch('/api/inventory').then(function (r) { return r.json(); }).then(function (inventory) {
-  var el = document.getElementById('inventory-table');
-if (!inventory.length) {
-el.innerHTML = '<p class="empty">No inventory items yet.</p>';
-return;
+<script>
+function loadCustomers() {
+  fetch('/api/customers').then(function (r) { return r.json(); }).then(function (customers) {
+    var el = document.getElementById('customers-table');
+    if (!customers.length) {
+      el.innerHTML = '<p class="empty">No customers yet.</p>';
+      return;
+    }
+    var rows = customers.map(function (c) {
+      return '<tr>' +
+        '<td>' + escapeHtml(c.name) + '</td>' +
+        '<td>' + escapeHtml(c.email) + '<br><span class="tag">' + escapeHtml(c.phone) + '</span></td>' +
+        '<td>' + escapeHtml(c.address) + '</td>' +
+        '<td>' + c.bookingCount + '</td>' +
+        '<td>$' + c.totalEstimate + '</td>' +
+        '</tr>';
+    }).join('');
+    el.innerHTML = '<table><tr><th>Name</th><th>Contact</th><th>Address</th><th># Requests</th><th>Total Est.</th></tr>' + rows + '</table>';
+  }).catch(function () {
+    document.getElementById('customers-table').innerHTML = '<p class="empty">Could not load customers.</p>';
+  });
 }
-var rows = inventory.map(function (item) {
-return '<tr class="inventory-row">' +
-  '<td>' + escapeHtml(item.item) + '</td>' +
-  '<td><input type="number" value="' + item.quantity + '" onchange="updateInventoryQty(' + item.id + ', this.value)"></td>' +
-  '</tr>';
-}).join('');
-  el.innerHTML = '<table><tr><th>Item</th><th>Quantity</th></tr>' + rows + '</table>';
-}).catch(function () {
-document.getElementById('inventory-table').innerHTML = '<p class="empty">Could not load inventory.</p>';
-});
+</script>
+
+<script>
+function loadInventory() {
+  fetch('/api/inventory').then(function (r) { return r.json(); }).then(function (inventory) {
+    var el = document.getElementById('inventory-table');
+    if (!inventory.length) {
+      el.innerHTML = '<p class="empty">No inventory items yet.</p>';
+      return;
+    }
+    var rows = inventory.map(function (item) {
+      return '<tr class="inventory-row">' +
+        '<td>' + escapeHtml(item.item) + '</td>' +
+        '<td><input type="number" value="' + item.quantity + '" onchange="updateInventoryQty(' + item.id + ', this.value)"></td>' +
+        '</tr>';
+    }).join('');
+    el.innerHTML = '<table><tr><th>Item</th><th>Quantity</th></tr>' + rows + '</table>';
+  }).catch(function () {
+    document.getElementById('inventory-table').innerHTML = '<p class="empty">Could not load inventory.</p>';
+  });
 }
 
 function updateInventoryQty(id, qty) {
   fetch('/api/inventory/' + id, {
-method: 'PATCH',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ quantity: parseInt(qty, 10) || 0 })
-});
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ quantity: parseInt(qty, 10) || 0 })
+  });
 }
 
 function addInventoryItem() {
   var nameEl = document.getElementById('new-item-name');
-var qtyEl = document.getElementById('new-item-qty');
-var name = nameEl.value.trim();
-if (!name) { return; }
-fetch('/api/inventory', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ item: name, quantity: parseInt(qtyEl.value, 10) || 0 })
+  var qtyEl = document.getElementById('new-item-qty');
+  var name = nameEl.value.trim();
+  if (!name) { return; }
+  fetch('/api/inventory', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ item: name, quantity: parseInt(qtyEl.value, 10) || 0 })
   }).then(function () {
-  nameEl.value = '';
+    nameEl.value = '';
     qtyEl.value = '';
-      loadInventory();
-});
+    loadInventory();
+  });
 }
 
 loadBookings();
 loadCustomers();
 loadInventory();
 </script>
-  </body>
-  </html>
-  
+</body>
+</html>
