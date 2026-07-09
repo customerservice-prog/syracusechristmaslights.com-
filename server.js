@@ -77,6 +77,7 @@ function requireAdmin(req, res, next) {
 }
 
 // Public: submit a booking / reservation request from the calculator cart.
+// Captures both the requested install date (November) and takedown date (January).
 app.post('/api/bookings', function (req, res) {
   var body = req.body || {};
   var name = body.name;
@@ -101,6 +102,7 @@ app.post('/api/bookings', function (req, res) {
     addons: body.addons || {},
     estimate: body.estimate || null,
     preferredDate: body.preferredDate || '',
+    takedownDate: body.takedownDate || '',
     notes: body.notes || '',
     status: 'new',
     createdAt: new Date().toISOString()
