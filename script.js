@@ -24,6 +24,7 @@ var roofDrawnItems = null;
 var cart = [];
 var cartCounter = 0;
 var lastCartTotal = 0;
+var currentItemType = 'roofline';
 
 function storyCountForMultiplier(multiplier) {
   if (multiplier <= 1.0) { return 1; }
@@ -72,6 +73,86 @@ function styleLabel() {
   return sel && sel.selectedOptions.length ? sel.selectedOptions[0].text : 'Warm white mini lights (classic)';
 }
 
+function computeCurrentItem() {
+  var modifier = styleModifier();
+  var label = styleLabel();
+  var type = currentItemType;
+
+  if (type === 'roofline') {
+    var sqft = parseFloat(document.getElementById('sqft').value) || 0;
+    var storyMultiplier = parseFloat(document.getElementById('stories').value) || 1;
+    var tierRate = parseFloat(document.getElementById('tier').value) || 7;
+    var permanent = document.getElementById('permanent').checked;
+    var tierLabel = tierLabelForRate(tierRate);
+
+    var calc = computeRooflinePrice({
+      sqft: sqft,
+      storyMultiplier: storyMultiplier,
+      tierRate: tierRate,
+      lightingModifier: modifier,
+      permanent: permanent,
+      measuredFootprint: measuredFootprintSqFt,
+      measuredPerimeter: measuredPerimeterFt
+    });
+
+    return {
+      valid: true,
+      type: 'roofline',
+      label: 'Roofline & Gutter Lighting - ' + tierLabel,
+      detail: label + ', approx ' + calc.perimeter.toFixed(0) + ' ft' + (permanent ? ', with permanent housing' : ''),
+      price: calc.price,
+      meta: { sqft: sqft, stories: storyCountForMultiplier(storyMultiplier), package: tierLabel, lightingStyle: label }
+    };
+  } else if (type === 'trees') {
+    var smallTrees = parseFloat(document.getElementById('smallTrees').value) || 0;
+    var largeTrees = parseFloat(document.getElementById('largeTrees').value) || 0;
+    if (smallTrees <= 0 && largeTrees <= 0) { return { valid: false }; }
+    var tSurcharge = TREE_SURCHARGE[modifier] || 0;
+    var tPrice = smallTrees * (SMALL_TREE_PRICE + tSurcharge) + largeTrees * (LARGE_TREE_PRICE + tSurcharge);
+    var parts = [];
+    if (smallTrees > 0) { parts.push(smallTrees + ' small'); }
+    if (largeTrees > 0) { parts.push(largeTrees + ' large'); }
+
+    return {
+      valid: true,
+      type: 'trees',
+      label: 'Tree Wrapping',
+      detail: parts.join(', ') + ' tree(s), ' + label,
+      price: tPrice,
+      meta: { lightingStyle: label }
+    };
+  } else if (type === 'garland') {
+    var garlandQty = parseFloat(document.getElementById('garlandQty').value) || 0;
+    if (garlandQty <= 0) { return { valid: false }; }
+    var gSurcharge = GARLAND_SURCHARGE[modifier] || 0;
+    var gPrice = garlandQty * (GARLAND_PRICE + gSurcharge);
+
+    return {
+      valid: true,
+      type: 'garland',
+      label: 'Garland & Wreaths',
+      detail: garlandQty + ' section(s), ' + label,
+      price: gPrice,
+      meta: { lightingStyle: label }
+    };
+  } else if (type === 'walkway') {
+    var walkwayFt = parseFloat(document.getElementById('walkwayFt').value) || 0;
+    if (walkwayFt <= 0) { return { valid: false }; }
+    var wRate = WALKWAY_RATE + (WALKWAY_STYLE_RATE[modifier] || 0);
+    var wPrice = walkwayFt * wRate;
+
+    return {
+      valid: true,
+      type: 'walkway',
+      label: 'Walkway / Pathway Lighting',
+      detail: walkwayFt + ' ft, ' + label,
+      price: wPrice,
+      meta: { lightingStyle: label }
+    };
+  }
+  return { valid: false };
+}
+
 function addCartItem(item) {
   item.id = ++cartCounter;
   cart.push(item);
@@ -88,6 +169,8 @@ function renderCart() {
   var totalEl = document.getElementById('cart-total');
   var noteEl = document.getElementById('cart-note');
   var checkoutBtn = document.getElementById('cart-checkout-btn');
+  var miniCart = document.getElementById('mini-cart');
+  var miniCartText = document.getElementById('mini-cart-text');
   if (!listEl) { return; }
 
   if (!cart.length) {
@@ -99,6 +182,7 @@ function renderCart() {
     if (existingReservation) { existingReservation.parentNode.removeChild(existingReservation); }
     var resultBox = document.getElementById('result');
     if (resultBox) { resultBox.hidden = true; }
+    if (miniCart) { miniCart.hidden = true; }
     return;
   }
 
@@ -132,6 +216,18 @@ function renderCart() {
 
   checkoutBtn.hidden = false;
   lastCartTotal = total;
+
+  if (miniCart && miniCartText) {
+    miniCart.hidden = false;
+    miniCartText.textContent = cart.length + (cart.length === 1 ? ' item' : ' items') + ' - ' + formatCurrency(total);
+  }
+}
+
+function updateLivePreview() {
+  var el = document.getElementById('live-preview-price');
+  if (!el) { return; }
+  var item = computeCurrentItem();
+  el.textContent = item.valid ? formatCurrency(item.price) : '$0';
 }
 
 function seasonDateRanges() {
@@ -174,89 +270,17 @@ function buildReservationForm() {
 }
 
 function updateItemFieldsVisibility() {
-  var typeSel = document.getElementById('itemType');
-  if (!typeSel) { return; }
-  var type = typeSel.value;
   ['roofline', 'trees', 'garland', 'walkway'].forEach(function (t) {
     var el = document.getElementById('fields-' + t);
-    if (el) { el.hidden = (t !== type); }
+    if (el) { el.hidden = (t !== currentItemType); }
   });
 }
 
 function handleAddToCart() {
-  var typeSel = document.getElementById('itemType');
-  var type = typeSel.value;
-  var modifier = styleModifier();
-  var label = styleLabel();
-
-  if (type === 'roofline') {
-    var sqft = parseFloat(document.getElementById('sqft').value) || 0;
-    var storyMultiplier = parseFloat(document.getElementById('stories').value) || 1;
-    var tierRate = parseFloat(document.getElementById('tier').value) || 7;
-    var permanent = document.getElementById('permanent').checked;
-    var tierLabel = tierLabelForRate(tierRate);
-
-    var calc = computeRooflinePrice({
-      sqft: sqft,
-      storyMultiplier: storyMultiplier,
-      tierRate: tierRate,
-      lightingModifier: modifier,
-      permanent: permanent,
-      measuredFootprint: measuredFootprintSqFt,
-      measuredPerimeter: measuredPerimeterFt
-    });
-
-    addCartItem({
-      type: 'roofline',
-      label: 'Roofline & Gutter Lighting - ' + tierLabel,
-      detail: label + ', approx ' + calc.perimeter.toFixed(0) + ' ft' + (permanent ? ', with permanent housing' : ''),
-      price: calc.price,
-      meta: { sqft: sqft, stories: storyCountForMultiplier(storyMultiplier), package: tierLabel, lightingStyle: label }
-    });
-  } else if (type === 'trees') {
-    var smallTrees = parseFloat(document.getElementById('smallTrees').value) || 0;
-    var largeTrees = parseFloat(document.getElementById('largeTrees').value) || 0;
-    if (smallTrees <= 0 && largeTrees <= 0) { return; }
-    var tSurcharge = TREE_SURCHARGE[modifier] || 0;
-    var tPrice = smallTrees * (SMALL_TREE_PRICE + tSurcharge) + largeTrees * (LARGE_TREE_PRICE + tSurcharge);
-    var parts = [];
-    if (smallTrees > 0) { parts.push(smallTrees + ' small'); }
-    if (largeTrees > 0) { parts.push(largeTrees + ' large'); }
-
-    addCartItem({
-      type: 'trees',
-      label: 'Tree Wrapping',
-      detail: parts.join(', ') + ' tree(s), ' + label,
-      price: tPrice,
-      meta: { lightingStyle: label }
-    });
-  } else if (type === 'garland') {
-    var garlandQty = parseFloat(document.getElementById('garlandQty').value) || 0;
-    if (garlandQty <= 0) { return; }
-    var gSurcharge = GARLAND_SURCHARGE[modifier] || 0;
-    var gPrice = garlandQty * (GARLAND_PRICE + gSurcharge);
-
-    addCartItem({
-      type: 'garland',
-      label: 'Garland & Wreaths',
-      detail: garlandQty + ' section(s), ' + label,
-      price: gPrice,
-      meta: { lightingStyle: label }
-    });
-  } else if (type === 'walkway') {
-    var walkwayFt = parseFloat(document.getElementById('walkwayFt').value) || 0;
-    if (walkwayFt <= 0) { return; }
-    var wRate = WALKWAY_RATE + (WALKWAY_STYLE_RATE[modifier] || 0);
-    var wPrice = walkwayFt * wRate;
-
-    addCartItem({
-      type: 'walkway',
-      label: 'Walkway / Pathway Lighting',
-      detail: walkwayFt + ' ft, ' + label,
-      price: wPrice,
-      meta: { lightingStyle: label }
-    });
-  }
+  var item = computeCurrentItem();
+  if (!item.valid) { return; }
+  addCartItem(item);
+  updateLivePreview();
 }
 
 function handleCheckout() {
@@ -316,9 +340,19 @@ function handleCheckout() {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-  var typeSel = document.getElementById('itemType');
-  if (typeSel) {
-    typeSel.addEventListener('change', updateItemFieldsVisibility);
+  var itemTypeGrid = document.getElementById('itemTypeGrid');
+  if (itemTypeGrid) {
+    Array.prototype.forEach.call(itemTypeGrid.querySelectorAll('.item-type-card'), function (btn) {
+      btn.addEventListener('click', function () {
+        currentItemType = btn.getAttribute('data-type');
+        Array.prototype.forEach.call(itemTypeGrid.querySelectorAll('.item-type-card'), function (b) {
+          b.classList.remove('active');
+        });
+        btn.classList.add('active');
+        updateItemFieldsVisibility();
+        updateLivePreview();
+      });
+    });
     updateItemFieldsVisibility();
   }
 
@@ -327,6 +361,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
   var checkoutBtn = document.getElementById('cart-checkout-btn');
   if (checkoutBtn) { checkoutBtn.addEventListener('click', handleCheckout); }
+
+  var miniCartBtn = document.getElementById('mini-cart-view-btn');
+  if (miniCartBtn) {
+    miniCartBtn.addEventListener('click', function () {
+      var cartBox = document.getElementById('cart-box');
+      if (cartBox) { cartBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+    });
+  }
+
+  var cartBuilder = document.querySelector('.cart-builder');
+  if (cartBuilder) {
+    cartBuilder.addEventListener('input', updateLivePreview);
+    cartBuilder.addEventListener('change', updateLivePreview);
+  }
 
   var sqftInput = document.getElementById('sqft');
   if (sqftInput) {
@@ -338,6 +386,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
+  updateLivePreview();
   initRoofMap();
 });
 
@@ -456,6 +505,7 @@ function initRoofMap() {
         var sqftField = document.getElementById('sqft');
         if (sqftField) { sqftField.value = measuredFootprintSqFt; }
         updateMapStatus('Using traced measurement: ' + measuredFootprintSqFt + ' sq ft, ' + measuredPerimeterFt + ' ft of roofline. Calculate your estimate below.');
+        updateLivePreview();
       }
     });
   }
@@ -468,6 +518,7 @@ function initRoofMap() {
       useBtn.hidden = true;
       clearBtn.hidden = true;
       updateMapStatus('Trace cleared. Draw a new polygon on the map.');
+      updateLivePreview();
     });
   }
-}
+      }
