@@ -341,6 +341,21 @@ resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 document.addEventListener('DOMContentLoaded', function () {
+var navToggle = document.getElementById('nav-toggle');
+var siteNav = document.getElementById('site-nav');
+if (navToggle && siteNav) {
+  navToggle.addEventListener('click', function () {
+    var isOpen = siteNav.classList.toggle('nav-open');
+    navToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+  });
+  Array.prototype.forEach.call(siteNav.querySelectorAll('a'), function (link) {
+    link.addEventListener('click', function () {
+      siteNav.classList.remove('nav-open');
+      navToggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+}
+
 var itemTypeGrid = document.getElementById('itemTypeGrid');
 if (itemTypeGrid) {
 Array.prototype.forEach.call(itemTypeGrid.querySelectorAll('.item-type-card'), function (btn) {
