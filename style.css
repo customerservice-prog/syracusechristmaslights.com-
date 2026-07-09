@@ -502,3 +502,5 @@ section h2 {
 
 .site-footer { background: var(--green-dark); color: white; text-align: center; padding: 45px 20px; }
 .footer-note { font-size: 0.85rem; color: #cde; margin-top: 15px; }
+
+.mini-cart[hidden] { display: none !important; }
