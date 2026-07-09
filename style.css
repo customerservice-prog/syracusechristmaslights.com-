@@ -1,3 +1,19 @@
+
+
+.map-trace-box .btn-secondary {
+  background: #fff;
+  color: var(--green);
+  border: 2px solid var(--green);
+}
+
+.map-trace-box .btn-secondary:hover {
+  background: var(--green);
+  color: #fff;
+}
+
+.map-trace-box [hidden] {
+  display: none !important;
+}
 :root {
   --green: #145a32;
   --red: #a3271b;
