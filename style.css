@@ -311,3 +311,123 @@ section h2 {
 .map-trace-box [hidden] {
   display: none !important;
 }
+.hero {
+background: linear-gradient(180deg, #0b1c3d 0%, #142a54 70%, #1c3a6b 100%);
+color: white;
+overflow: hidden;
+position: relative;
+padding: 60px 20px 0;
+text-align: left;
+}
+
+.hero-flex {
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+justify-content: center;
+gap: 30px;
+position: relative;
+z-index: 2;
+}
+
+.hero-text {
+flex: 1 1 320px;
+max-width: 480px;
+text-align: left;
+}
+
+.hero-text h1 { font-size: 2.2rem; margin-bottom: 10px; }
+.hero-text p { font-size: 1.1rem; margin-bottom: 25px; }
+
+.hero-scene {
+flex: 1 1 320px;
+max-width: 480px;
+padding-bottom: 10px;
+}
+
+.house-svg {
+width: 100%;
+height: auto;
+display: block;
+}
+
+.bulb {
+transform-box: fill-box;
+transform-origin: center;
+animation: twinkle 1.8s ease-in-out infinite;
+animation-delay: calc(var(--i, 0) * 0.15s);
+}
+
+@keyframes twinkle {
+0%, 100% { opacity: 0.4; transform: scale(0.8); }
+50% { opacity: 1; transform: scale(1.25); }
+}
+
+.c-red   { fill: #ff4d4d; filter: drop-shadow(0 0 6px #ff4d4d); }
+.c-gold  { fill: #ffd23b; filter: drop-shadow(0 0 6px #ffd23b); }
+.c-green { fill: #4ade80; filter: drop-shadow(0 0 6px #4ade80); }
+.c-blue  { fill: #60a5fa; filter: drop-shadow(0 0 6px #60a5fa); }
+
+.window {
+animation: glow 3s ease-in-out infinite;
+transform-box: fill-box;
+transform-origin: center;
+}
+
+@keyframes glow {
+0%, 100% { opacity: 0.75; }
+50% { opacity: 1; }
+}
+
+.star {
+fill: white;
+animation: twinkle 2.4s ease-in-out infinite;
+transform-box: fill-box;
+transform-origin: center;
+}
+
+.star:nth-of-type(2) { animation-delay: 0.4s; }
+.star:nth-of-type(3) { animation-delay: 0.8s; }
+.star:nth-of-type(4) { animation-delay: 1.2s; }
+.star:nth-of-type(5) { animation-delay: 1.6s; }
+.star:nth-of-type(6) { animation-delay: 2s; }
+
+.snowfall {
+position: absolute;
+inset: 0;
+pointer-events: none;
+overflow: hidden;
+z-index: 1;
+}
+
+.snowfall span {
+position: absolute;
+top: -10px;
+width: 6px;
+height: 6px;
+background: white;
+border-radius: 50%;
+opacity: 0.8;
+animation: fall linear infinite;
+}
+
+@keyframes fall {
+to { transform: translateY(320px) translateX(20px); opacity: 0; }
+}
+
+.snowfall span:nth-child(1) { left: 5%; animation-duration: 7s; animation-delay: 0s; }
+.snowfall span:nth-child(2) { left: 15%; animation-duration: 9s; animation-delay: 1s; }
+.snowfall span:nth-child(3) { left: 25%; animation-duration: 6s; animation-delay: 2s; }
+.snowfall span:nth-child(4) { left: 35%; animation-duration: 8s; animation-delay: 0.5s; }
+.snowfall span:nth-child(5) { left: 45%; animation-duration: 10s; animation-delay: 1.5s; }
+.snowfall span:nth-child(6) { left: 55%; animation-duration: 7.5s; animation-delay: 2.5s; }
+.snowfall span:nth-child(7) { left: 65%; animation-duration: 9.5s; animation-delay: 0.8s; }
+.snowfall span:nth-child(8) { left: 75%; animation-duration: 6.5s; animation-delay: 1.8s; }
+.snowfall span:nth-child(9) { left: 85%; animation-duration: 8.5s; animation-delay: 2.2s; }
+.snowfall span:nth-child(10) { left: 95%; animation-duration: 7s; animation-delay: 3s; }
+.snowfall span:nth-child(11) { left: 50%; animation-duration: 9s; animation-delay: 0.2s; }
+.snowfall span:nth-child(12) { left: 10%; animation-duration: 6s; animation-delay: 2.8s; }
+
+@media (max-width: 700px) {
+.hero-text { text-align: center; }
+}
