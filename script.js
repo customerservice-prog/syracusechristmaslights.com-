@@ -134,21 +134,39 @@ function renderCart() {
   lastCartTotal = total;
 }
 
+function seasonDateRanges() {
+  var now = new Date();
+  var currentYear = now.getFullYear();
+  var installYear = currentYear;
+  // If we are already in December or later in the year, point at next year's November season.
+  if (now.getMonth() >= 11) { installYear = currentYear + 1; }
+  var takedownYear = installYear + 1;
+  function pad(n) { return n < 10 ? ('0' + n) : String(n); }
+  return {
+    installMin: installYear + '-11-01',
+    installMax: installYear + '-11-30',
+    takedownMin: takedownYear + '-01-01',
+    takedownMax: takedownYear + '-01-31'
+  };
+}
+
 function buildReservationForm() {
+  var ranges = seasonDateRanges();
   var wrap = document.createElement('div');
   wrap.id = 'reservation-wrap';
 
   wrap.innerHTML =
     '<h4>Reserve These Items</h4>' +
-    '<p>Tell us how to reach you and your preferred install window. This does not charge you anything or guarantee a date - our team will follow up to confirm.</p>' +
+    '<p>Tell us how to reach you, then pick your install date in November and your takedown date in January. This does not charge you anything or guarantee a date - our team will follow up to confirm both.</p>' +
     '<form id="reservation-form">' +
     '<label>Your Name<input type="text" id="res-name" required></label>' +
     '<label>Email<input type="email" id="res-email" required></label>' +
     '<label>Phone<input type="tel" id="res-phone" required></label>' +
     '<label>Address<input type="text" id="res-address" placeholder="Street address in the Syracuse area"></label>' +
-    '<label>Preferred Install Date<input type="date" id="res-date"></label>' +
+    '<label>Preferred Install Date (November)<input type="date" id="res-date" min="' + ranges.installMin + '" max="' + ranges.installMax + '" required></label>' +
+    '<label>Preferred Takedown Date (January)<input type="date" id="res-takedown-date" min="' + ranges.takedownMin + '" max="' + ranges.takedownMax + '"></label>' +
     '<label>Notes<textarea id="res-notes" rows="2" placeholder="Anything else we should know?"></textarea></label>' +
-    '<button type="submit" id="res-submit">Request This Date</button>' +
+    '<button type="submit" id="res-submit">Request These Dates</button>' +
     '<p id="res-status"></p>' +
     '</form>';
 
@@ -265,6 +283,7 @@ function handleCheckout() {
       phone: document.getElementById('res-phone').value,
       address: document.getElementById('res-address').value,
       preferredDate: document.getElementById('res-date').value,
+      takedownDate: document.getElementById('res-takedown-date').value,
       notes: document.getElementById('res-notes').value,
       items: cart.map(function (i) { return { type: i.type, label: i.label, detail: i.detail, price: Math.round(i.price) }; }),
       package: cart.map(function (i) { return i.label; }).join(' + '),
@@ -284,7 +303,7 @@ function handleCheckout() {
       if (!res.ok) { throw new Error('Request failed'); }
       return res.json();
     }).then(function () {
-      statusEl.textContent = 'Thanks! We received your request and will follow up by email or phone to confirm your date.';
+      statusEl.textContent = 'Thanks! We received your request and will follow up by email or phone to confirm your install and takedown dates.';
       document.getElementById('reservation-form').reset();
       submitBtn.disabled = false;
     }).catch(function () {
