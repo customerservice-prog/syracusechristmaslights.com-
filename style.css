@@ -504,3 +504,5 @@ section h2 {
 .footer-note { font-size: 0.85rem; color: #cde; margin-top: 15px; }
 
 .mini-cart[hidden] { display: none !important; }
+
+[hidden] { display: none !important; }
