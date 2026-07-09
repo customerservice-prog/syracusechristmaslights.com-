@@ -10,6 +10,11 @@ var SMALL_TREE_PRICE = 45;
 var LARGE_TREE_PRICE = 85;
 var GARLAND_PRICE = 35;
 var PERMANENT_UPGRADE_PER_FT = 3;
+var measuredFootprintSqFt = null;
+var measuredPerimeterFt = null;
+var roofMap = null;
+var roofDrawnItems = null;
+
 
 function storyCountForMultiplier(multiplier) {
   if (multiplier <= 1.0) { return 1; }
@@ -25,8 +30,14 @@ function tierLabelForRate(rate) {
 
 function calculateEstimate(inputs) {
   var storyCount = storyCountForMultiplier(inputs.storyMultiplier);
-  var footprint = inputs.sqft / storyCount;
-  var perimeter = 4 * Math.sqrt(footprint) * SHAPE_FACTOR;
+  var footprint, perimeter;
+    if (inputs.measuredFootprint && inputs.measuredPerimeter) {
+      footprint = inputs.measuredFootprint;
+      perimeter = inputs.measuredPerimeter;
+    } else {
+      footprint = inputs.sqft / storyCount;
+      perimeter = 4 * Math.sqrt(footprint) * SHAPE_FACTOR;
+    }
 
 var basePrice = perimeter * inputs.tierRate * inputs.storyMultiplier;
 
@@ -101,7 +112,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                                   smallTrees: smallTrees,
                                                   largeTrees: largeTrees,
                                                   garland: garland,
-                                                  permanent: permanent
+                                                  permanent: permanent,
+      measuredFootprint: measuredFootprintSqFt,
+      measuredPerimeter: measuredPerimeterFt
                                                 });
 
                                                 var resultBox = document.getElementById('result');
@@ -180,4 +193,147 @@ document.addEventListener('DOMContentLoaded', function () {
 
                                                 resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
                           });
+
+    var sqftInput = document.getElementById('sqft');
+    if (sqftInput) {
+      sqftInput.addEventListener('input', function () {
+        measuredFootprintSqFt = null;
+        measuredPerimeterFt = null;
+        var mapStatus = document.getElementById('map-status');
+        if (mapStatus) { mapStatus.textContent = ''; }
+      });
+    }
+
+    initRoofMap();
 });
+
+function geocodeAddress(address) {
+  var url = 'https://nominatim.openstreetmap.org/search?format=json&limit=1&q=' + encodeURIComponent(address);
+  return fetch(url, { headers: { 'Accept': 'application/json' } }).then(function (res) {
+    if (!res.ok) { throw new Error('Geocoding failed'); }
+    return res.json();
+  }).then(function (results) {
+    if (!results || !results.length) { throw new Error('No results'); }
+    return { lat: parseFloat(results[0].lat), lon: parseFloat(results[0].lon) };
+  });
+}
+
+function squareMetersToFeet(m2) {
+  return m2 * 10.7639;
+}
+
+function updateMapStatus(text) {
+  var el = document.getElementById('map-status');
+  if (el) { el.textContent = text; }
+}
+
+function onRoofDrawn(layer) {
+  var useBtn = document.getElementById('map-use-btn');
+  var clearBtn = document.getElementById('map-clear-btn');
+  var geojson = layer.toGeoJSON();
+
+  var areaM2 = turf.area(geojson);
+  var areaFt2 = squareMetersToFeet(areaM2);
+
+  var line = turf.polygonToLine(geojson);
+  var perimeterKm = turf.length(line, { units: 'kilometers' });
+  var perimeterFt = perimeterKm * 3280.84;
+
+  measuredFootprintSqFt = Math.round(areaFt2);
+  measuredPerimeterFt = Math.round(perimeterFt);
+
+  updateMapStatus('Traced roof: about ' + measuredFootprintSqFt + ' sq ft, ' + measuredPerimeterFt + ' ft of roofline.');
+
+  if (useBtn) { useBtn.hidden = false; }
+  if (clearBtn) { clearBtn.hidden = false; }
+}
+
+function initRoofMap() {
+  var searchBtn = document.getElementById('map-search-btn');
+  var addressInput = document.getElementById('map-address');
+  var useBtn = document.getElementById('map-use-btn');
+  var clearBtn = document.getElementById('map-clear-btn');
+
+  if (!searchBtn || typeof L === 'undefined') { return; }
+
+  searchBtn.addEventListener('click', function () {
+    var address = addressInput.value.trim();
+    if (!address) {
+      updateMapStatus('Enter an address first.');
+      return;
+    }
+
+    updateMapStatus('Looking up your address...');
+
+    geocodeAddress(address).then(function (loc) {
+      var mapEl = document.getElementById('roof-map');
+      mapEl.style.display = 'block';
+
+      if (!roofMap) {
+        roofMap = L.map('roof-map').setView([loc.lat, loc.lon], 20);
+
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+          maxZoom: 21,
+          attribution: 'Tiles &copy; Esri'
+        }).addTo(roofMap);
+
+        roofDrawnItems = new L.FeatureGroup();
+        roofMap.addLayer(roofDrawnItems);
+
+        var drawControl = new L.Control.Draw({
+          draw: {
+            polygon: true,
+            polyline: false,
+            circle: false,
+            circlemarker: false,
+            marker: false,
+            rectangle: false
+          },
+          edit: {
+            featureGroup: roofDrawnItems
+          }
+        });
+        roofMap.addControl(drawControl);
+
+        roofMap.on(L.Draw.Event.CREATED, function (event) {
+          roofDrawnItems.clearLayers();
+          roofDrawnItems.addLayer(event.layer);
+          onRoofDrawn(event.layer);
+        });
+
+        roofMap.on(L.Draw.Event.EDITED, function (event) {
+          event.layers.eachLayer(function (layer) {
+            onRoofDrawn(layer);
+          });
+        });
+      } else {
+        roofMap.setView([loc.lat, loc.lon], 20);
+      }
+
+      updateMapStatus('Found it! Use the polygon tool on the map to trace your roofline.');
+    }).catch(function () {
+      updateMapStatus('Could not find that address. Try including city and state.');
+    });
+  });
+
+  if (useBtn) {
+    useBtn.addEventListener('click', function () {
+      if (measuredFootprintSqFt && measuredPerimeterFt) {
+        var sqftField = document.getElementById('sqft');
+        if (sqftField) { sqftField.value = measuredFootprintSqFt; }
+        updateMapStatus('Using traced measurement: ' + measuredFootprintSqFt + ' sq ft, ' + measuredPerimeterFt + ' ft of roofline. Calculate your estimate below.');
+      }
+    });
+  }
+
+  if (clearBtn) {
+    clearBtn.addEventListener('click', function () {
+      if (roofDrawnItems) { roofDrawnItems.clearLayers(); }
+      measuredFootprintSqFt = null;
+      measuredPerimeterFt = null;
+      useBtn.hidden = true;
+      clearBtn.hidden = true;
+      updateMapStatus('Trace cleared. Draw a new polygon on the map.');
+    });
+  }
+}
