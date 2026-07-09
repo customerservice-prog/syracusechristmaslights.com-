@@ -29,7 +29,7 @@ function ensureDataFiles() {
       { id: 4, item: 'Extension Cords (25ft, outdoor)', quantity: 30 },
       { id: 5, item: 'Roofline Clips (pack of 100)', quantity: 20 },
       { id: 6, item: 'Timers', quantity: 20 }
-      ];
+    ];
     fs.writeFileSync(INVENTORY_FILE, JSON.stringify(defaultInventory, null, 2));
   }
 }
@@ -53,41 +53,41 @@ function requireAdmin(req, res, next) {
   var user = process.env.ADMIN_USER;
   var pass = process.env.ADMIN_PASSWORD;
 
-if (!user || !pass) {
-  return res.status(503).send('Admin dashboard is not configured yet. Set ADMIN_USER and ADMIN_PASSWORD environment variables in Railway to enable it.');
-}
+  if (!user || !pass) {
+    return res.status(503).send('Admin dashboard is not configured yet. Set ADMIN_USER and ADMIN_PASSWORD environment variables in Railway to enable it.');
+  }
 
-var auth = req.headers.authorization;
+  var auth = req.headers.authorization;
   if (!auth || auth.indexOf('Basic ') !== 0) {
     res.set('WWW-Authenticate', 'Basic realm="Admin"');
     return res.status(401).send('Authentication required.');
   }
 
-var decoded = Buffer.from(auth.slice(6), 'base64').toString();
+  var decoded = Buffer.from(auth.slice(6), 'base64').toString();
   var parts = decoded.split(':');
   var suppliedUser = parts[0];
   var suppliedPass = parts.slice(1).join(':');
 
-if (suppliedUser === user && suppliedPass === pass) {
-  return next();
-}
+  if (suppliedUser === user && suppliedPass === pass) {
+    return next();
+  }
 
-res.set('WWW-Authenticate', 'Basic realm="Admin"');
+  res.set('WWW-Authenticate', 'Basic realm="Admin"');
   return res.status(401).send('Invalid credentials.');
 }
 
-// Public: submit a booking / reservation request from the calculator.
+// Public: submit a booking / reservation request from the calculator cart.
 app.post('/api/bookings', function (req, res) {
   var body = req.body || {};
   var name = body.name;
   var email = body.email;
   var phone = body.phone;
 
-         if (!name || !email || !phone) {
-           return res.status(400).json({ error: 'Name, email, and phone are required.' });
-         }
+  if (!name || !email || !phone) {
+    return res.status(400).json({ error: 'Name, email, and phone are required.' });
+  }
 
-         var bookings = readJSON(BOOKINGS_FILE);
+  var bookings = readJSON(BOOKINGS_FILE);
   var newBooking = {
     id: Date.now(),
     name: name,
@@ -97,6 +97,7 @@ app.post('/api/bookings', function (req, res) {
     sqft: body.sqft || null,
     stories: body.stories || null,
     package: body.package || '',
+    items: Array.isArray(body.items) ? body.items : [],
     addons: body.addons || {},
     estimate: body.estimate || null,
     preferredDate: body.preferredDate || '',
@@ -105,7 +106,7 @@ app.post('/api/bookings', function (req, res) {
     createdAt: new Date().toISOString()
   };
 
-         bookings.push(newBooking);
+  bookings.push(newBooking);
   writeJSON(BOOKINGS_FILE, bookings);
   res.status(201).json({ success: true, booking: newBooking });
 });
@@ -127,7 +128,7 @@ app.patch('/api/bookings/:id', requireAdmin, function (req, res) {
   }
   bookings[idx] = Object.assign({}, bookings[idx], req.body);
   writeJSON(BOOKINGS_FILE, bookings);
-             res.json({ success: true, booking: bookings[idx] });
+  res.json({ success: true, booking: bookings[idx] });
 });
 
 // Admin: customers derived from the booking history.
