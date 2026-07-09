@@ -411,6 +411,31 @@ var el = document.getElementById('map-status');
 if (el) { el.textContent = text; }
 }
 
+function tileXYFromLatLon(lat, lon, zoom) {
+  var latRad = (lat * Math.PI) / 180;
+  var n = Math.pow(2, zoom);
+  var x = Math.floor(((lon + 180) / 360) * n);
+  var y = Math.floor(
+    ((1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2) * n
+  );
+  return { x: x, y: y };
+}
+
+function ensureSatelliteImagery(map, attemptsLeft) {
+  attemptsLeft = typeof attemptsLeft === 'number' ? attemptsLeft : 4;
+  var zoom = map.getZoom();
+  if (zoom <= 16 || attemptsLeft <= 0) { return; }
+  var center = map.getCenter();
+  var tile = tileXYFromLatLon(center.lat, center.lng, zoom);
+  var url = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/' + zoom + '/' + tile.y + '/' + tile.x;
+  fetch(url).then(function (r) { return r.blob(); }).then(function (blob) {
+    if (blob.size < 6000 && map.getZoom() === zoom) {
+      map.setZoom(zoom - 1);
+      ensureSatelliteImagery(map, attemptsLeft - 1);
+    }
+  }).catch(function () {});
+}
+
 function fetchBuildingFootprint(lat, lon) {
 var query = '[out:json][timeout:25];way(around:25,' + lat + ',' + lon + ')["building"];out geom;';
 var url = 'https://overpass-api.de/api/interpreter?data=' + encodeURIComponent(query);
@@ -569,6 +594,7 @@ mapEl.style.display = 'block';
 
 if (!roofMap) {
 roofMap = L.map('roof-map').setView([loc.lat, loc.lon], 20);
+        ensureSatelliteImagery(roofMap);
 
 L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
 maxZoom: 21,
@@ -606,6 +632,7 @@ onRoofDrawn(layer);
 });
 } else {
 roofMap.setView([loc.lat, loc.lon], 20);
+      ensureSatelliteImagery(roofMap);
 }
 
 updateMapStatus('Found it! Looking up your building outline...');
@@ -679,3 +706,4 @@ Array.prototype.forEach.call(animatedSections, function (el) { observer.observe(
 Array.prototype.forEach.call(animatedSections, function (el) { el.classList.add('visible'); });
 }
 });
+
