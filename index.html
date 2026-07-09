@@ -49,7 +49,7 @@
 "@context": "https://schema.org",
 "@type": "FAQPage",
 "mainEntity": [
-{ "@type": "Question", "name": "How accurate is the online estimate?", "acceptedAnswer": { "@type": "Answer", "text": "It uses satellite roof tracing plus your chosen package and lighting style, making it the most accurate instant estimate in the industry. We confirm final pricing with a quick photo or on-site review before installation day." } },
+{ "@type": "Question", "name": "How accurate is the online estimate?", "acceptedAnswer": { "@type": "Answer", "text": "We automatically detect your home's real building footprint from public map data, then combine it with your chosen package and lighting style, making it the most accurate instant estimate in the industry. We confirm final pricing with a quick photo or on-site review before installation day." } },
 { "@type": "Question", "name": "Do you supply the lights?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, commercial-grade LED lights are included in every package, and you can choose your lighting style in the instant estimate tool." } },
 { "@type": "Question", "name": "When should I book?", "acceptedAnswer": { "@type": "Answer", "text": "Syracuse installation slots fill up through November, so early booking gets you your preferred date. You will also pick your January takedown date at the same time." } },
 { "@type": "Question", "name": "What happens after the holidays?", "acceptedAnswer": { "@type": "Answer", "text": "We come back on the January takedown date you chose when booking and can store your lights until next year with the Premium package." } }
@@ -84,7 +84,7 @@
 <div class="container hero-flex">
 <div class="hero-text">
 <h1>Syracuse's Most Accurate Christmas Light Installation Quote, Instantly</h1>
-<p>Trace your roof by satellite, build your cart item by item, and watch your price update in real time. No sales visit required. Pick your November install date and January takedown date and reserve both online in minutes.</p>
+<p>We automatically measure your roof from public map data, you build your cart item by item, and watch your price update in real time. No sales visit required. Pick your November install date and January takedown date and reserve both online in minutes.</p>
 <a href="#calculator" class="btn btn-primary">Get My Instant Price</a>
 <a href="#packages" class="btn btn-secondary">See Packages</a>
 </div>
@@ -188,7 +188,8 @@
 <h2>The Most Accurate Online Quote In The Industry</h2>
 <p>Most holiday lighting companies still send someone to your driveway just to write down a rough number. We built something different: trace your actual roofline by satellite imagery, choose your exact lighting style and package, and our engine prices your project the same way our crews plan the job, foot by foot.</p>
 <ul class="accuracy-points">
-<li><strong>Satellite roof tracing</strong> - draw your exact roofline instead of guessing square footage.</li>
+<li><strong>Automatic roof detection</strong> - we pull your real building footprint from map data automatically, no guessing and no manual tracing required.</li>
+<li><strong>Visual light preview</strong> - see simulated lights rendered right along your real roofline before you ever book.</li>
 <li><strong>Style-specific pricing</strong> - warm white, multicolor, C9 bulbs, and smart RGB each priced on their own.</li>
 <li><strong>Live running total</strong> - every add-on updates your price instantly, before you ever talk to us.</li>
 <li><strong>No-obligation reservation</strong> - lock in your November install and January takedown date online.</li>
@@ -242,18 +243,21 @@
 <section id="calculator" class="calculator fade-in-section">
 <div class="container">
 <h2>Get Your Instant Estimate</h2>
-<p class="calc-intro">Skip the in-person quote visit. Trace your roof by satellite for pinpoint accuracy, build your cart item by item, and see your price update in real time.</p>
+<p class="calc-intro">Skip the in-person quote visit. We automatically measure your roof for pinpoint accuracy, build your cart item by item, and preview your lights right on the map before you book.</p>
 <div class="map-trace-box">
-<h3>Automatically Measure Your Roof (optional)</h3>
-<p>Search your address, then trace your roofline on the satellite view below for a more accurate measurement than manual entry.</p>
+<h3>Automatically Measure Your Roof</h3>
+<p>Search your address and we automatically detect your building's footprint from public map data for a precise measurement, no manual tracing needed. Fine-tune the outline with the edit tool if needed, then preview how your lights will actually look along your roofline.</p>
 <div class="map-search-row">
 <input type="text" id="map-address" placeholder="Enter your home address">
 <button type="button" id="map-search-btn" class="btn btn-secondary">Find My Home</button>
 </div>
 <p id="map-status"></p>
 <div id="roof-map"></div>
+<div class="map-btn-row">
 <button type="button" id="map-use-btn" class="btn btn-primary" hidden>Use This Roof Measurement</button>
+<button type="button" id="map-preview-btn" class="btn btn-secondary" hidden>Preview My Lights</button>
 <button type="button" id="map-clear-btn" class="btn btn-secondary" hidden>Clear Trace</button>
+</div>
 </div>
 
 <div class="cart-builder">
@@ -365,7 +369,7 @@ Add permanent year-round light housing (+$3/ft)
 <h2>Frequently Asked Questions</h2>
 <div class="faq-item">
 <h3>How accurate is the online estimate?</h3>
-<p>It uses satellite roof tracing plus your chosen package and lighting style, making it one of the most accurate instant estimates in the industry. We confirm final pricing with a quick photo or on-site review before installation day.</p>
+<p>We automatically detect your home's real building footprint from public map data, then combine it with your chosen package and lighting style, making it one of the most accurate instant estimates in the industry. We confirm final pricing with a quick photo or on-site review before installation day.</p>
 </div>
 <div class="faq-item">
 <h3>Do you supply the lights?</h3>
