@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Syracuse Christmas Lights | Professional Holiday Light Installation</title>
-<meta name="description" content="Syracuse, NY's Christmas light installation experts. Get an instant online price estimate, choose your lighting style, and book insured, professional roofline lighting for your home or business.">
+<meta name="description" content="Syracuse, NY's Christmas light installation experts. Build a custom cart of roofline, tree, garland, and walkway lighting, get an instant online price, and book insured, professional installation.">
 <meta name="keywords" content="Christmas light installation Syracuse NY, holiday lighting service, roofline lights, professional Christmas lights, Central New York holiday lighting">
 <link rel="canonical" href="https://syracusechristmaslights.com/">
 <meta property="og:title" content="Syracuse Christmas Lights | Professional Holiday Light Installation">
@@ -69,6 +69,7 @@
 <a href="#calculator">Get Estimate</a>
 <a href="#areas">Areas We Serve</a>
 <a href="#faq">FAQ</a>
+<a href="#calculator" class="btn btn-primary nav-book-btn">Book Now</a>
 </nav>
 </div>
 </header>
@@ -81,7 +82,7 @@
 <div class="hero-text">
 <h1>Syracuse's Christmas Light Installation, Done Right</h1>
 <p>Get an instant price estimate for your home and reserve your installation date online in minutes.</p>
-<a href="#calculator" class="btn btn-primary">Get My Instant Estimate</a>
+<a href="#calculator" class="btn btn-primary">Book Now</a>
 <a href="#packages" class="btn btn-secondary">See Packages</a>
 </div>
 <div class="hero-scene" aria-hidden="true">
@@ -123,7 +124,7 @@
 <div class="container">
 <h2>Central New York's Trusted Holiday Lighting Crew</h2>
 <p>We're a local, established outdoor services business bringing the same reliability and attention to detail we're known for in the warmer months to holiday lighting. Our crews are fully insured, trained on safe ladder and roofline work, and equipped with commercial-grade LED lighting built to handle a full Syracuse winter. From a single-story ranch to a large multi-story home, we design a layout that fits your roofline, then handle setup, mid-season checks, and a tidy takedown once the holidays wrap up.</p>
-<p>We built this site so you can skip the back-and-forth quote calls other companies require. Enter your home's details, pick a package and lighting style, and get a real starting price in under a minute, then reserve your install date online.</p>
+<p>We built this site so you can skip the back-and-forth quote calls other companies require. Add each part of your project to a cart, pick a lighting style for each, and get a real starting price in under a minute, then reserve your install date online.</p>
 </div>
 </section>
 
@@ -134,6 +135,7 @@
 <li><strong>Roofline and gutter lights</strong> - custom fit to your home's exact roofline, clipped in securely for wind and snow.</li>
 <li><strong>Tree and shrub wrapping</strong> - even wraps on ornamental trees, shrubs, and small evergreens.</li>
 <li><strong>Wreaths, garland, and accent lighting</strong> - lit garland, wreaths, and doorway accents for a finished look.</li>
+<li><strong>Walkway and pathway lighting</strong> - lit pathways, driveways, and walkways for a full-property glow.</li>
 <li><strong>Permanent, year-round light housing</strong> - a discreet track installed once, restring or change colors for any holiday or season.</li>
 <li><strong>Full takedown and seasonal storage</strong> - we remove everything after the season and can store lights until next year.</li>
 <li><strong>Commercial and storefront holiday lighting</strong> - storefronts, property entrances, and commercial buildings.</li>
@@ -161,7 +163,7 @@
 <p>Roofline, gutters, and accent lighting with high-end fixtures, plus storage.</p>
 </div>
 </div>
-<p class="minimum-note">275 dollar minimum applies to every package. Final pricing confirmed after a quick photo or on-site review.</p>
+<p class="minimum-note">275 dollar minimum applies to every project. Final pricing confirmed after a quick photo or on-site review.</p>
 </div>
 </section>
 
@@ -224,23 +226,55 @@
 <button type="button" id="map-clear-btn" class="btn btn-secondary" hidden>Clear Trace</button>
 </div>
 
-<form id="estimate-form">
-<label for="sqft">Approximate house square footage</label>
-<input type="number" id="sqft" min="500" step="50" value="2000" required>
+<div class="cart-builder">
+<h3>Build Your Custom Quote</h3>
+<p>Add each part of your project separately and pick the lighting style for each. Mix and match for the most accurate combined total.</p>
 
+<label for="itemType">What would you like to light up?</label>
+<select id="itemType">
+<option value="roofline">Roofline &amp; Gutter Lighting</option>
+<option value="trees">Tree Wrapping</option>
+<option value="garland">Garland &amp; Wreaths</option>
+<option value="walkway">Walkway / Pathway Lighting</option>
+</select>
+
+<div id="fields-roofline" class="item-fields">
+<label for="sqft">Approximate house square footage</label>
+<input type="number" id="sqft" min="500" step="50" value="2000">
 <label for="stories">Number of stories</label>
 <select id="stories">
 <option value="1">1 story</option>
 <option value="1.15">2 stories</option>
 <option value="1.3">3 or more stories</option>
 </select>
-
 <label for="tier">Package</label>
 <select id="tier">
 <option value="4.5">Basic</option>
 <option value="7" selected>Standard</option>
 <option value="10">Premium</option>
 </select>
+<label class="checkbox-label">
+<input type="checkbox" id="permanent">
+Add permanent year-round light housing (+$3/ft)
+</label>
+</div>
+
+<div id="fields-trees" class="item-fields" hidden>
+<label for="smallTrees">Small trees to wrap</label>
+<input type="number" id="smallTrees" min="0" value="1">
+<label for="largeTrees">Large trees to wrap</label>
+<input type="number" id="largeTrees" min="0" value="0">
+</div>
+
+<div id="fields-garland" class="item-fields" hidden>
+<label for="garlandQty">Garland or wreath sections</label>
+<input type="number" id="garlandQty" min="1" value="1">
+</div>
+
+<div id="fields-walkway" class="item-fields" hidden>
+<label for="walkwayFt">Approximate linear feet of pathway</label>
+<input type="number" id="walkwayFt" min="0" step="5" value="20">
+</div>
 
 <label for="lightingStyle">Lighting style</label>
 <select id="lightingStyle">
@@ -250,28 +284,21 @@
 <option value="3">Color-changing smart / RGB lights</option>
 </select>
 
-<label for="smallTrees">Small trees to wrap</label>
-<input type="number" id="smallTrees" min="0" value="0">
+<button type="button" id="add-to-cart-btn" class="btn btn-primary">Add to Cart</button>
+</div>
 
-<label for="largeTrees">Large trees to wrap</label>
-<input type="number" id="largeTrees" min="0" value="0">
-
-<label for="garland">Garland or wreaths</label>
-<input type="number" id="garland" min="0" value="0">
-
-<label class="checkbox-label">
-<input type="checkbox" id="permanent">
-Add permanent year-round light housing
-</label>
-
-<button type="submit" class="btn btn-primary">Calculate My Estimate</button>
-</form>
+<div class="cart-box">
+<h3>Your Cart</h3>
+<ul id="cart-list" class="cart-list">
+<li class="cart-empty">No items added yet. Add your roofline, trees, garland, or walkway lighting above.</li>
+</ul>
+<p id="cart-total" class="cart-total" hidden></p>
+<p id="cart-note" class="cart-note"></p>
+<button type="button" id="cart-checkout-btn" class="btn btn-primary" hidden>Reserve These Items</button>
+</div>
 
 <div id="result" class="result" hidden>
-<h3>Your Estimate</h3>
-<p id="result-price" class="result-price"></p>
-<p id="result-note" class="result-note"></p>
-<a href="#contact" class="btn btn-primary">Book This Estimate</a>
+<h3>Reserve Your Project</h3>
 </div>
 </div>
 </section>
@@ -280,8 +307,8 @@ Add permanent year-round light housing
 <div class="container">
 <h2>How It Works</h2>
 <ol>
-<li>Enter your approximate square footage and number of stories.</li>
-<li>Pick a package and lighting style, plus any add-ons, and see your instant estimate.</li>
+<li>Add each part of your project (roofline, trees, garland, walkway) to your cart.</li>
+<li>Pick a package and lighting style for each item and see your instant combined estimate.</li>
 <li>Pick an install date and reserve it with a deposit.</li>
 <li>We install, you enjoy the season, we handle takedown.</li>
 </ol>
