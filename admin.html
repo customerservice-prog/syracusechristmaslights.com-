@@ -21,6 +21,8 @@ tr:hover td { background: #fafafa; }
 .add-inventory input { padding: 6px; border: 1px solid #ccc; border-radius: 4px; }
 .add-inventory button, .save-btn { background: #145a32; color: white; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; }
 .empty { color: #888; font-style: italic; }
+.cal-legend { font-size: 0.8rem; color: #555; margin-bottom: 8px; }
+.cal-legend span { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
 .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
 .cal-header button { background: #145a32; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; }
 .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
@@ -29,6 +31,7 @@ tr:hover td { background: #fafafa; }
 .cal-empty { background: #fafafa; border: none; }
 .cal-day-num { font-weight: bold; margin-bottom: 2px; }
 .cal-booking { background: #145a32; color: white; border-radius: 3px; padding: 1px 4px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.cal-takedown { background: #a3271b; color: white; border-radius: 3px; padding: 1px 4px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .has-booking { border-color: #145a32; }
 .item-line { font-size: 0.8rem; margin-bottom: 2px; }
 </style>
@@ -44,6 +47,7 @@ tr:hover td { background: #fafafa; }
 </section>
 <section>
 <h2>Booking Calendar</h2>
+<p class="cal-legend"><span style="background:#145a32;"></span>Install date &nbsp; <span style="background:#a3271b;"></span>Takedown date</p>
 <div id="calendar-view"><p class="empty">Loading...</p></div>
 </section>
 
@@ -90,12 +94,19 @@ function renderCalendar(bookings) {
   var firstDay = new Date(year, month, 1).getDay();
   var daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  var byDate = {};
+  var byInstall = {};
+  var byTakedown = {};
   bookings.forEach(function (b) {
-    if (!b.preferredDate) { return; }
-    var d = String(b.preferredDate).slice(0, 10);
-    if (!byDate[d]) { byDate[d] = []; }
-    byDate[d].push(b);
+    if (b.preferredDate) {
+      var d = String(b.preferredDate).slice(0, 10);
+      if (!byInstall[d]) { byInstall[d] = []; }
+      byInstall[d].push(b);
+    }
+    if (b.takedownDate) {
+      var t = String(b.takedownDate).slice(0, 10);
+      if (!byTakedown[t]) { byTakedown[t] = []; }
+      byTakedown[t].push(b);
+    }
   });
 
   var cells = '';
@@ -106,12 +117,17 @@ function renderCalendar(bookings) {
     var mm = (month + 1) < 10 ? ('0' + (month + 1)) : String(month + 1);
     var dd = day < 10 ? ('0' + day) : String(day);
     var dateStr = year + '-' + mm + '-' + dd;
-    var dayBookings = byDate[dateStr] || [];
+    var installBookings = byInstall[dateStr] || [];
+    var takedownBookings = byTakedown[dateStr] || [];
     var content = '<div class="cal-day-num">' + day + '</div>';
-    dayBookings.forEach(function (b) {
-      content += '<div class="cal-booking" title="' + escapeHtml(b.name) + '">' + escapeHtml(b.name) + '</div>';
+    installBookings.forEach(function (b) {
+      content += '<div class="cal-booking" title="Install: ' + escapeHtml(b.name) + '">' + escapeHtml(b.name) + '</div>';
     });
-    cells += '<div class="cal-cell' + (dayBookings.length ? ' has-booking' : '') + '">' + content + '</div>';
+    takedownBookings.forEach(function (b) {
+      content += '<div class="cal-takedown" title="Takedown: ' + escapeHtml(b.name) + '">Takedown: ' + escapeHtml(b.name) + '</div>';
+    });
+    var hasAny = installBookings.length || takedownBookings.length;
+    cells += '<div class="cal-cell' + (hasAny ? ' has-booking' : '') + '">' + content + '</div>';
   }
 
   var header = '<div class="cal-header"><button onclick="changeMonth(-1)">Prev</button><strong>' + monthNames[month] + ' ' + year + '</strong><button onclick="changeMonth(1)">Next</button></div>';
@@ -144,6 +160,7 @@ function loadBookings() {
         '<td>' + renderItemsCell(b) + '</td>' +
         '<td>' + (b.estimate != null ? ('$' + b.estimate) : '-') + '</td>' +
         '<td>' + escapeHtml(b.preferredDate) + '</td>' +
+        '<td>' + escapeHtml(b.takedownDate) + '</td>' +
         '<td><select class="status-select" onchange="updateBookingStatus(' + b.id + ', this.value)">' +
         ['new', 'contacted', 'confirmed', 'completed', 'cancelled'].map(function (s) {
           return '<option value="' + s + '"' + (s === b.status ? ' selected' : '') + '>' + s + '</option>';
@@ -151,7 +168,7 @@ function loadBookings() {
         '</select></td>' +
         '</tr>';
     }).join('');
-    el.innerHTML = '<table><tr><th>Contact</th><th>Address</th><th>Items</th><th>Estimate</th><th>Preferred Date</th><th>Status</th></tr>' + rows + '</table>';
+    el.innerHTML = '<table><tr><th>Contact</th><th>Address</th><th>Items</th><th>Estimate</th><th>Install Date</th><th>Takedown Date</th><th>Status</th></tr>' + rows + '</table>';
   }).catch(function () {
     document.getElementById('bookings-table').innerHTML = '<p class="empty">Could not load bookings.</p>';
   });
