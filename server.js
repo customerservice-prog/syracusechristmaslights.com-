@@ -43,7 +43,6 @@ function writeJSON(file, data) {
 }
 
 app.use(express.json());
-app.use(express.static(__dirname));
 
 // Simple HTTP Basic Auth gate for admin routes.
 // Set ADMIN_USER and ADMIN_PASSWORD as environment variables in Railway
@@ -75,6 +74,24 @@ function requireAdmin(req, res, next) {
   res.set('WWW-Authenticate', 'Basic realm="Admin"');
   return res.status(401).send('Invalid credentials.');
 }
+
+// Defense in depth: never allow the /data directory to be served as static
+// files. Normally DATA_DIR lives outside the app folder (Railway volume),
+// but if that env var is ever unset, this blocks direct access to the local
+// fallback folder so booking/customer data can never be fetched directly.
+app.use('/data', function (req, res) {
+  res.status(404).send('Not found.');
+});
+
+// Admin dashboard page. Registered BEFORE the static file server below so
+// admin.html can never be served as a plain, unauthenticated static file -
+// every request for it (or /admin) must pass the same Basic Auth check as
+// the admin APIs.
+app.get(['/admin', '/admin.html'], requireAdmin, function (req, res) {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+app.use(express.static(__dirname, { index: 'index.html' }));
 
 // Public: submit a booking / reservation request from the calculator cart.
 // Captures both the requested install date (November) and takedown date (January).
@@ -190,11 +207,7 @@ app.patch('/api/inventory/:id', requireAdmin, function (req, res) {
   res.json(inventory[idx]);
 });
 
-// Admin dashboard page (protected by the same Basic Auth gate).
-app.get('/admin', requireAdmin, function (req, res) {
-  res.sendFile(path.join(__dirname, 'admin.html'));
-});
-
 app.listen(PORT, function () {
   console.log('Syracuse Christmas Lights server running on port ' + PORT);
 });
+
