@@ -10,7 +10,6 @@ var SMALL_TREE_PRICE = 45;
 var LARGE_TREE_PRICE = 85;
 var GARLAND_PRICE = 35;
 var WALKWAY_RATE = 6;
-var PERMANENT_UPGRADE_PER_FT = 3;
 
 var TREE_SURCHARGE = { 0: 0, 1.5: 15, 3: 30 };
 var GARLAND_SURCHARGE = { 0: 0, 1.5: 10, 3: 20 };
@@ -57,10 +56,6 @@ perimeter = 4 * Math.sqrt(footprint) * SHAPE_FACTOR;
 var effectiveRate = inputs.tierRate + inputs.lightingModifier;
 var price = perimeter * effectiveRate * inputs.storyMultiplier;
 
-if (inputs.permanent) {
-price += perimeter * PERMANENT_UPGRADE_PER_FT;
-}
-
 return { price: price, perimeter: perimeter };
 }
 
@@ -83,7 +78,6 @@ if (type === 'roofline') {
 var sqft = parseFloat(document.getElementById('sqft').value) || 0;
 var storyMultiplier = parseFloat(document.getElementById('stories').value) || 1;
 var tierRate = parseFloat(document.getElementById('tier').value) || 7;
-var permanent = document.getElementById('permanent').checked;
 var tierLabel = tierLabelForRate(tierRate);
 
 var calc = computeRooflinePrice({
@@ -91,7 +85,6 @@ sqft: sqft,
 storyMultiplier: storyMultiplier,
 tierRate: tierRate,
 lightingModifier: modifier,
-permanent: permanent,
 measuredFootprint: measuredFootprintSqFt,
 measuredPerimeter: measuredPerimeterFt
 });
@@ -100,7 +93,7 @@ return {
 valid: true,
 type: 'roofline',
 label: 'Roofline & Gutter Lighting - ' + tierLabel,
-detail: label + ', approx ' + calc.perimeter.toFixed(0) + ' ft' + (permanent ? ', with permanent housing' : ''),
+detail: label + ', approx ' + calc.perimeter.toFixed(0) + ' ft',
 price: calc.price,
 meta: { sqft: sqft, stories: storyCountForMultiplier(storyMultiplier), package: tierLabel, lightingStyle: label }
 };
