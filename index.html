@@ -91,7 +91,7 @@
 </div>
 <div class="container hero-flex">
 <div class="hero-text">
-<h1>Syracuse's Most Accurate Christmas Light Installation Quote, Instantly</h1>
+<h1>Syracuse's <span class="accent">Most Accurate</span> Christmas Light Installation Quote, Instantly</h1>
 <p>We automatically measure your roof from public map data, you build your cart item by item, and watch your price update in real time. No sales visit required. Pick your November install date and January takedown date and reserve both online in minutes.</p>
 <a href="#calculator" class="btn btn-primary">Get My Instant Price</a>
 <a href="#packages" class="btn btn-secondary">See Packages</a>
@@ -151,14 +151,14 @@
 <section id="services" class="services fade-in-section">
 <div class="container">
 <h2>Services</h2>
-<ul class="service-list">
-<li><strong>Roofline and gutter lights</strong> - custom fit to your home's exact roofline, clipped in securely for wind and snow.</li>
-<li><strong>Tree and shrub wrapping</strong> - even wraps on ornamental trees, shrubs, and small evergreens.</li>
-<li><strong>Wreaths, garland, and accent lighting</strong> - lit garland, wreaths, and doorway accents for a finished look.</li>
-<li><strong>Walkway and pathway lighting</strong> - lit pathways, driveways, and walkways for a full-property glow.</li>
-<li><strong>Permanent, year-round light housing</strong> - a discreet track installed once, restring or change colors for any holiday or season.</li>
-<li><strong>Full takedown and seasonal storage</strong> - we remove everything after the season on the January date you choose, and can store lights until next year.</li>
-<li><strong>Commercial and storefront holiday lighting</strong> - storefronts, property entrances, and commercial buildings.</li>
+<ul class="services-grid">
+<li class="service-card"><span class="service-icon">🏠</span><h3>Roofline &amp; Gutter Lights</h3><p>Custom fit to your home's exact roofline, clipped in securely for wind and snow.</p></li>
+<li class="service-card"><span class="service-icon">🌲</span><h3>Tree &amp; Shrub Wrapping</h3><p>Even wraps on ornamental trees, shrubs, and small evergreens.</p></li>
+<li class="service-card"><span class="service-icon">🎀</span><h3>Wreaths &amp; Garland</h3><p>Lit garland, wreaths, and doorway accents for a finished look.</p></li>
+<li class="service-card"><span class="service-icon">🚶</span><h3>Walkway &amp; Pathway</h3><p>Lit pathways, driveways, and walkways for a full-property glow.</p></li>
+<li class="service-card"><span class="service-icon">💡</span><h3>Permanent Light Housing</h3><p>A discreet track installed once, restring or change colors for any holiday or season.</p></li>
+<li class="service-card"><span class="service-icon">📦</span><h3>Takedown &amp; Storage</h3><p>We remove everything on your chosen January date and can store lights until next year.</p></li>
+<li class="service-card"><span class="service-icon">🏬</span><h3>Commercial Lighting</h3><p>Storefronts, property entrances, and commercial buildings.</p></li>
 </ul>
 </div>
 </section>
@@ -209,18 +209,36 @@
 <div class="container">
 <h2>The Look You Can Expect</h2>
 <p>A few examples of the holiday lighting styles we install, from classic warm white roofline trim to icicle lights and lit trees.</p>
-<div class="gallery-grid">
-<figure>
+<div class="gallery-grid" id="gallery-grid">
+<figure class="gallery-figure" data-caption="Roofline, porch, and garland lighting">
 <img src="https://images.unsplash.com/photo-1664289342468-fa99588e60b8?auto=format&fit=crop&w=1200&q=80" alt="Home with warm white roofline, porch, and garland Christmas lights" loading="lazy">
+<span class="view-hint">View larger</span>
 <figcaption>Roofline, porch, and garland lighting</figcaption>
 </figure>
-<figure>
+<figure class="gallery-figure" data-caption="Warm white gable and roofline trim">
 <img src="https://images.unsplash.com/photo-1640040295076-dad02f1e9756?auto=format&fit=crop&w=1200&q=80" alt="Snowy gable roofline trimmed with warm white Christmas lights" loading="lazy">
+<span class="view-hint">View larger</span>
 <figcaption>Warm white gable and roofline trim</figcaption>
 </figure>
-<figure>
+<figure class="gallery-figure" data-caption="Icicle lights and lit trees">
 <img src="https://images.unsplash.com/photo-1544397838-37a35169ebf0?auto=format&fit=crop&w=1200&q=80" alt="Porch icicle lights and a lit Christmas tree beside a house" loading="lazy">
+<span class="view-hint">View larger</span>
 <figcaption>Icicle lights and lit trees</figcaption>
+</figure>
+<figure class="gallery-figure" data-caption="Classic warm white house lighting">
+<img src="https://images.unsplash.com/photo-1664289340914-e88538627c02?auto=format&fit=crop&w=1200&q=80" alt="House fully outlined in classic warm white Christmas lights" loading="lazy">
+<span class="view-hint">View larger</span>
+<figcaption>Classic warm white house lighting</figcaption>
+</figure>
+<figure class="gallery-figure" data-caption="Lights glowing at dusk">
+<img src="https://images.unsplash.com/photo-1754522616772-c829b747541c?auto=format&fit=crop&w=1200&q=80" alt="House with holiday lights glowing at dusk" loading="lazy">
+<span class="view-hint">View larger</span>
+<figcaption>Lights glowing at dusk</figcaption>
+</figure>
+<figure class="gallery-figure" data-caption="Full house holiday lighting display">
+<img src="https://images.unsplash.com/photo-1642184665676-636ffd0c3afe?auto=format&fit=crop&w=1200&q=80" alt="House covered in a full holiday lighting display" loading="lazy">
+<span class="view-hint">View larger</span>
+<figcaption>Full house holiday lighting display</figcaption>
 </figure>
 </div>
 <p class="gallery-note">Photos shown are representative styles, not specific customer installations. Have photos of your own home lit up by us? Send them our way to be featured here.</p>
@@ -405,6 +423,14 @@ Add permanent year-round light housing (+$3/ft)
 <div id="mini-cart" class="mini-cart" hidden>
 <span id="mini-cart-text">0 items - $0</span>
 <button type="button" id="mini-cart-view-btn" class="btn btn-primary">View Cart</button>
+</div>
+
+<div id="lightbox" class="lightbox-overlay" hidden>
+<div class="lightbox-content">
+<button type="button" class="lightbox-close" id="lightbox-close" aria-label="Close image viewer">&times;</button>
+<img id="lightbox-img" src="" alt="">
+<p class="lightbox-caption" id="lightbox-caption"></p>
+</div>
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
