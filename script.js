@@ -715,10 +715,45 @@ entry.target.classList.add('visible');
 observer.unobserve(entry.target);
 }
 });
-}, { threshold: 0.12 });
+}, { threshold: 0.01, rootMargin: '0px 0px 200px 0px' });
 Array.prototype.forEach.call(animatedSections, function (el) { observer.observe(el); });
 } else {
 Array.prototype.forEach.call(animatedSections, function (el) { el.classList.add('visible'); });
 }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+var lightbox = document.getElementById('lightbox');
+var lightboxImg = document.getElementById('lightbox-img');
+var lightboxCaption = document.getElementById('lightbox-caption');
+var lightboxClose = document.getElementById('lightbox-close');
+var galleryGrid = document.getElementById('gallery-grid');
+if (!lightbox || !galleryGrid) { return; }
+
+function openLightbox(figure) {
+var img = figure.querySelector('img');
+if (!img) { return; }
+lightboxImg.src = img.src.replace('w=1200', 'w=1600');
+lightboxImg.alt = img.alt;
+lightboxCaption.textContent = figure.getAttribute('data-caption') || '';
+lightbox.hidden = false;
+}
+
+function closeLightbox() {
+lightbox.hidden = true;
+lightboxImg.src = '';
+}
+
+Array.prototype.forEach.call(galleryGrid.querySelectorAll('.gallery-figure'), function (figure) {
+figure.addEventListener('click', function () { openLightbox(figure); });
+});
+
+if (lightboxClose) { lightboxClose.addEventListener('click', closeLightbox); }
+lightbox.addEventListener('click', function (e) {
+if (e.target === lightbox) { closeLightbox(); }
+});
+document.addEventListener('keydown', function (e) {
+if (e.key === 'Escape' && !lightbox.hidden) { closeLightbox(); }
+});
 });
 
