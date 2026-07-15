@@ -138,6 +138,18 @@ nav a:hover { opacity: 1; text-decoration: underline; }
   font-weight: 600;
 }
 
+.trust-badge-new {
+  background: rgba(255, 255, 255, 0.16);
+  padding: 4px 14px;
+  border-radius: 20px;
+  animation: badge-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes badge-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 210, 59, 0.45); }
+  50% { box-shadow: 0 0 0 6px rgba(255, 210, 59, 0); }
+}
+
 /* Hero */
 .hero {
   background: linear-gradient(180deg, #0b1c3d 0%, #142a54 70%, #1c3a6b 100%);
@@ -371,6 +383,12 @@ section h2 {
   border-color: var(--gold);
   box-shadow: var(--shadow);
   background: white;
+  animation: featured-glow 3s ease-in-out infinite;
+}
+
+@keyframes featured-glow {
+  0%, 100% { box-shadow: var(--shadow), 0 0 0 rgba(212, 160, 23, 0); }
+  50% { box-shadow: var(--shadow), 0 0 26px rgba(212, 160, 23, 0.35); }
 }
 
 .package-card .ribbon {
@@ -385,6 +403,12 @@ section h2 {
   padding: 4px 14px;
   border-radius: 20px;
   white-space: nowrap;
+  animation: ribbon-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes ribbon-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 160, 23, 0.55); }
+  50% { box-shadow: 0 0 0 7px rgba(212, 160, 23, 0); }
 }
 
 .package-card .price { font-size: 1.5rem; color: var(--red); font-weight: 700; margin: 6px 0; }
