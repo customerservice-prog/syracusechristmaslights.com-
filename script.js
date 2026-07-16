@@ -778,3 +778,73 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   if (faqItems.length > 0) { faqItems[0].classList.add('faq-open'); }
 });
+
+
+// ===== Festive enhancements: site-wide snowfall, running deer, popping emoji headings =====
+document.addEventListener('DOMContentLoaded', function () {
+  // Site-wide snowfall overlay
+  var snowWrap = document.createElement('div');
+  snowWrap.className = 'site-snowfall';
+  snowWrap.setAttribute('aria-hidden', 'true');
+  var flakeChars = ['\u2744', '\u2745', '\u2746'];
+  var flakeCount = 40;
+  for (var i = 0; i < flakeCount; i++) {
+    var flake = document.createElement('span');
+    flake.className = 'flake';
+    flake.textContent = flakeChars[i % flakeChars.length];
+    var size = 10 + Math.random() * 16;
+    flake.style.left = (Math.random() * 100) + 'vw';
+    flake.style.fontSize = size + 'px';
+    flake.style.animationDuration = (6 + Math.random() * 10) + 's';
+    flake.style.animationDelay = (Math.random() * 10) + 's';
+    snowWrap.appendChild(flake);
+  }
+  document.body.appendChild(snowWrap);
+
+  // Running deer crossing the screen
+  var deer = document.createElement('div');
+  deer.className = 'deer-runner';
+  deer.setAttribute('aria-hidden', 'true');
+  deer.textContent = '\ud83e\udd8c';
+  deer.style.animationDuration = '16s';
+  document.body.appendChild(deer);
+
+  var deer2 = document.createElement('div');
+  deer2.className = 'deer-runner';
+  deer2.setAttribute('aria-hidden', 'true');
+  deer2.textContent = '\ud83e\udd8c';
+  deer2.style.bottom = '60px';
+  deer2.style.animationDuration = '22s';
+  deer2.style.animationDelay = '4s';
+  document.body.appendChild(deer2);
+
+  // Popping christmas emoji on section headings
+  document.querySelectorAll('section h2').forEach(function (h2) {
+    if (h2.dataset.festive) return;
+    h2.dataset.festive = '1';
+    var lead = document.createElement('span');
+    lead.className = 'emoji-pop';
+    lead.setAttribute('aria-hidden', 'true');
+    lead.textContent = '\ud83c\udf84 ';
+    var trail = document.createElement('span');
+    trail.className = 'emoji-pop';
+    trail.setAttribute('aria-hidden', 'true');
+    trail.textContent = ' \u2728';
+    h2.prepend(lead);
+    h2.appendChild(trail);
+  });
+
+  // Festive emoji divider row after the trust bar
+  var trustBar = document.querySelector('.trust-bar');
+  if (trustBar && !document.querySelector('.festive-divider')) {
+    var divider = document.createElement('div');
+    divider.className = 'festive-divider';
+    divider.setAttribute('aria-hidden', 'true');
+    ['\ud83c\udf84', '\u2744\ufe0f', '\ud83e\udd8c', '\u2728', '\ud83c\udf84'].forEach(function (ch) {
+      var span = document.createElement('span');
+      span.textContent = ch;
+      divider.appendChild(span);
+    });
+    trustBar.insertAdjacentElement('afterend', divider);
+  }
+});
