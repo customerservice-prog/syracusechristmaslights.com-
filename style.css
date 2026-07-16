@@ -158,27 +158,44 @@ nav a:hover { opacity: 1; text-decoration: underline; }
   color: white;
   overflow: hidden;
   position: relative;
-  padding: 60px 20px 0;
+  padding: 110px 20px 90px;
   text-align: left;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+}
+
+.hero-photo-bg {
+  background-image: linear-gradient(180deg, rgba(9,20,45,0.82) 0%, rgba(9,20,45,0.6) 45%, rgba(9,20,45,0.93) 100%), url('hero-house-lights.jpg');
+  background-size: cover;
+  background-position: center 65%;
+  background-repeat: no-repeat;
 }
 
 .hero-flex {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 30px;
   position: relative;
   z-index: 2;
+  width: 100%;
 }
 
 .hero-text {
   flex: 1 1 320px;
-  max-width: 480px;
+  max-width: 640px;
   text-align: left;
 }
 
-.hero-text h1 { font-size: 2.4rem; margin-bottom: 12px; }
+.hero-text h1 {
+  font-size: 3.1rem;
+  font-weight: 800;
+  line-height: 1.12;
+  margin-bottom: 16px;
+  text-shadow: 0 4px 24px rgba(0,0,0,0.45);
+}
 .hero-text p { font-size: 1.12rem; margin-bottom: 25px; color: #dce6f5; }
 
 .hero-scene {
@@ -411,16 +428,30 @@ transition: transform 0.4s ease;
 }
 
 .about {
-  padding: 50px 20px;
+  padding: 60px 20px;
   text-align: center;
+  background: var(--green-dark);
+}
+
+.about .container {
   max-width: 720px;
-  margin: 0 auto;
+}
+
+.about h2 {
+  color: white;
+}
+
+.about p {
+  color: #dce9df;
+  font-size: 1.05rem;
 }
 
 section h2 {
   text-align: center;
   color: var(--green);
-  font-size: 1.9rem;
+  font-size: 2.1rem;
+  font-weight: 800;
+  letter-spacing: 0.3px;
   margin-bottom: 30px;
 }
 
