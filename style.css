@@ -754,6 +754,7 @@ section h2 {
 .footer-col { flex: 1 1 280px; }
 .footer-heading { color: var(--gold-light); font-size: 1.1rem; margin: 0 0 12px; }
 .footer-cta { margin-top: 14px; }
+.site-footer .footer-cta { color: #2b2200; text-decoration: none; }
 .footer-note { font-size: 0.85rem; color: #cde; margin-top: 15px; }
 
 .mini-cart[hidden] { display: none !important; }
