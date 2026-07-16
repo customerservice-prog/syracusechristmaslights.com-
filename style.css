@@ -80,6 +80,8 @@ nav a {
 
 nav a:hover { opacity: 1; text-decoration: underline; }
 
+.nav-phone-link { white-space: nowrap; }
+
 .btn {
   display: inline-block;
   padding: 13px 26px;
@@ -651,3 +653,18 @@ section h2 {
 
 .light-bulb-dot { animation: bulbTwinkle 1.6s ease-in-out infinite; }
 @keyframes bulbTwinkle { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+.footer-contact a, .site-footer a {
+color: var(--gold-light);
+font-weight: 600;
+text-decoration: underline;
+}
+
+.footer-contact a:hover, .site-footer a:hover {
+color: var(--gold);
+}
+
+.areas a {
+color: var(--green);
+font-weight: 600;
+}
