@@ -199,6 +199,16 @@ nav a:hover { opacity: 1; text-decoration: underline; }
 
 .house-svg { position: relative; z-index: 1; width: 100%; height: auto; display: block; }
 
+.hero-photo {
+position: relative;
+z-index: 1;
+width: 100%;
+height: auto;
+display: block;
+border-radius: 18px;
+box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+}
+
 .hero-text h1 .accent {
   background: linear-gradient(90deg, var(--gold-light), var(--gold));
   -webkit-background-clip: text;
@@ -667,4 +677,32 @@ color: var(--gold);
 .areas a {
 color: var(--green);
 font-weight: 600;
+}
+
+.icon-svg {
+width: 1em;
+height: 1em;
+display: inline-block;
+vertical-align: -0.15em;
+fill: currentColor;
+}
+
+.service-icon, .item-type-icon {
+color: var(--green);
+display: inline-block;
+}
+
+.package-icon {
+color: var(--gold);
+display: inline-block;
+}
+
+.trust-badge-new .icon-svg {
+width: 0.9em;
+height: 0.9em;
+vertical-align: -0.1em;
+}
+
+.nav-phone-link .icon-svg {
+margin-right: 2px;
 }
