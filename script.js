@@ -779,3 +779,46 @@ document.addEventListener('DOMContentLoaded', function () {
   if (faqItems.length > 0) { faqItems[0].classList.add('faq-open'); }
 });
 
+
+
+// ===== Big animated running deer with glow + sparkle pop =====
+document.addEventListener('DOMContentLoaded', function () {
+  function createDeer(duration, delay, bottom) {
+    var wrap = document.createElement('div');
+    wrap.className = 'deer-wrap';
+    wrap.setAttribute('aria-hidden', 'true');
+    wrap.style.animationDuration = duration;
+    wrap.style.animationDelay = delay;
+    if (bottom) wrap.style.bottom = bottom;
+
+    var glow = document.createElement('div');
+    glow.className = 'deer-glow';
+    wrap.appendChild(glow);
+
+    var emoji = document.createElement('span');
+    emoji.className = 'deer-emoji';
+    emoji.textContent = '\ud83e\udd8c';
+    wrap.appendChild(emoji);
+
+    var sparkPositions = [
+      { top: '10%', left: '-10px' },
+      { top: '40%', left: '90%' },
+      { top: '70%', left: '10%' },
+      { top: '20%', left: '70%' }
+    ];
+    sparkPositions.forEach(function (pos, i) {
+      var spark = document.createElement('span');
+      spark.className = 'deer-spark';
+      spark.textContent = '\u2728';
+      spark.style.top = pos.top;
+      spark.style.left = pos.left;
+      spark.style.animationDelay = (i * 0.18) + 's';
+      wrap.appendChild(spark);
+    });
+
+    document.body.appendChild(wrap);
+  }
+
+  createDeer('9s', '0s', '10px');
+  createDeer('13s', '3s', '80px');
+});
