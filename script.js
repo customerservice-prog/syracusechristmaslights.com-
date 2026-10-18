@@ -320,7 +320,8 @@ body: JSON.stringify(payload)
 }).then(function (res) {
 if (!res.ok) { throw new Error('Request failed'); }
 return res.json();
-}).then(function () {
+}).then(function (data) {
+if (!data || data.success !== true || !data.booking || !data.booking.id) { throw new Error('Booking receipt missing'); }
 statusEl.textContent = 'Thanks! We received your request and will follow up by email or phone to confirm your install and takedown dates.';
 document.getElementById('reservation-form').reset();
 submitBtn.disabled = false;
