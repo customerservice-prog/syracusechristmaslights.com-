@@ -8,6 +8,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
+app.use(require('./siteViewsSender.cjs').createSiteViewsSender());
 const PORT = process.env.PORT || 3000;
 
 const DATA_DIR = process.env.RAILWAY_VOLUME_MOUNT_PATH || path.join(__dirname, 'data');
@@ -210,4 +211,5 @@ app.patch('/api/inventory/:id', requireAdmin, function (req, res) {
 app.listen(PORT, function () {
   console.log('Syracuse Christmas Lights server running on port ' + PORT);
 });
+
 
