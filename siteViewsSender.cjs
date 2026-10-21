@@ -6,7 +6,7 @@ function eligible(req) {
   const headers = req.headers || {};
   if (headers.dnt === '1' || headers['sec-gpc'] === '1') return null;
   if (/prefetch|prerender/i.test(String(headers['sec-purpose'] || '')+' '+String(headers.purpose || ''))) return null;
-  if (/bot\b|crawler|spider|headless|lighthouse|monitor|uptime|curl\/|wget\/|python-requests/i.test(String(headers['user-agent'] || ''))) return null;
+  if (/bot\b|crawler|spider|headless|lighthouse|monitor|uptime|curl\/|wget\/|python-requests|SWA-(?:WebsiteQualityAudit|Owner-Domain-Verification|Site-Views|Verification)|^(?:node|undici)$/i.test(String(headers['user-agent'] || ''))) return null;
   const path = String(req.originalUrl || req.url || '/').split('?')[0];
   if (path.length > 1000 || !path.startsWith('/') || path.startsWith('//') || /[#\\\x00-\x20\x7f]/.test(path)) return null;
   let decoded; try { decoded = decodeURIComponent(path); } catch { return null; }
